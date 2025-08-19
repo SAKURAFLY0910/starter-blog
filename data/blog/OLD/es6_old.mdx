@@ -38,61 +38,6 @@ let { a = 0, b, c = 4, d: v ,e} = { a: 1, b: 2, d: 5 };
 // a = 1   b = 2   c = 4   v = 5  e = undefined
 ```
 
-#### 字符串的扩展
-
-ES6加强了对Unicode的支持，并且扩展了字符串对象      
-
-JavaScript允许采用\uxxxx形式表示一个字符，其中xxxx表示字符的Unicode码点      
-但是，这种表示法只限于码点在\uOOOO-\uFFFF之间的字符。超出这个范围的字符，必须用2个双字节的形式表达**\uD842\uDFB7**    
-[示例双字节异体字](https://www.fileformat.info/info/unicode/char/20bb7/index.htm)，此文字unicode码是**20BB7**，如果使用**\u20BB7**,JavaScript 会理解成\u20BB+7。由于\u20BB是一个不可打印字符，所以只会显示一个空格，后面跟一个7
-
-
-##### codePointAt()
-[[示例双字节异体字](https://www.fileformat.info/info/unicode/char/20bb7/index.htm)]这个字UniCode码为**20BB7**,如果使用charCodeAt()函数，可获取十进制Unicode码，但是此函数只能获取到第一个字节的十进制Unicode码55362，即十六进制D842;如果存在第二个UniCode码想获取需要使用charCodAt(1),成功则返回十进制Unicode码，否则返回NaN.
-**codePointAt函数返回完整的十进制Unicode码，可通过toString(16)转换为16进制Unicode码**
-```JS
-'\uD842\uDFB7' === '\u{20BB7}'
-// true   
-```
-大括号表示法与四字节的UTF-16编码是等价的。
-codePointAt方法是测试一个字符是由2个字节还是4个字节组成的最简单方法。
-```JS
-// 判断是否四字节
-function is32Bit(v) {
-      return v.codePointAt(0) > 0XFFFF;
-}
-
-// Unicode转码解码函数
-$.extend({
-      encodeUnicode: function (v) {
-        var ascii = '';
-        for (var i = 0; i < v.length; i++) {
-          var code = Number(v[i].charCodeAt(0));
-          if (code > 47) {
-            var charAscii = code.toString(16);
-            charAscii =
-              new String('0000').substring(charAscii.length, 4) + charAscii;
-            ascii += '\\u' + charAscii;
-          } else {
-            ascii += v[i];
-          }
-        }
-        return ascii;
-      },
-      //解码   Unicode-->字符
-      decodeUnicode: function (v) {
-        debugger;
-        var r = v.match(/\u[0-9a-fA-F]{4}/g);
-        if (r == null) {
-          return v;
-        }
-        for (var i = 0; i < r.length; i++) {
-          v = v.replace(r[i], unescape(r[i].replace('\\u', '%u')));
-        }
-        return v;
-      },
-});
-```
 
 ##### String.fromCodePoint()
 
