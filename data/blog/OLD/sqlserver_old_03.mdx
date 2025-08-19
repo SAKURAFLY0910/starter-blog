@@ -1,0 +1,439 @@
+---
+title: '3. FOR XML (SQL Server) : SELECT 查询将结果作为行集返回'
+date: '2022-06-13 11:53'
+tags: ['SQLServer', '数据库', 'FOR XML']
+draft: false
+layout: PostLayout
+summary: 'FOR XML子句'
+---
+
+<TOCInline toc={props.toc} />
+
+### 环境要求
+
+* [ MicroSoft SqlServer 文档 ](https://docs.microsoft.com/zh-cn/sql/relational-databases/xml/for-xml-sql-server?view=sql-server-ver16)     
+
+* 所有版本 SQL Server版本均支持此语法   
+
+
+### 基本初识
+
+在 FOR XML 子句中，有 **RAW**、**AUTO**、**EXPLICIT**、**PATH** 四种模式。
+
+##### RAW 模式：
+RAW 模式在 SELECT 语句返回的行集中为每个行生成一个行元素。 可以通过编写嵌套 FOR XML 查询来生成 XML 层次结构。
+
+##### AUTO 模式：
+AUTO 模式将基于指定 SELECT 语句的方式来使用试探性方法在 XML 结果中生成嵌套。 您对生成的 XML 的形状具有最低限度的控制能力。 除了 AUTO 模式的试探性方法生成的 XML 形状之外，还可以编写 FOR XML 查询来生成 XML 层次结构。
+##### EXPLICIT模式：
+EXPLICIT 模式允许对 XML 的形状进行更多控制。 您可以随意混合属性和元素来确定 XML 的形状。
+##### PATH模式：
+PATH 模式与嵌套 FOR XML 查询功能一起以较简单的方式提供了 EXPLICIT 模式的灵活性。
+
+
+### 测试数据库：
+
+
+```SQL
+CREATE TABLE [dbo].[userTable](
+	[id] [nvarchar](50) NULL,
+	[encode] [nvarchar](50) NULL,
+	[name] [nvarchar](50) NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[userTable] ADD  CONSTRAINT [DF_user_id]  DEFAULT (newid()) FOR [id]
+GO
+
+```
+
+```SQL
+INSERT [dbo].[userTable] ([id], [encode], [name]) VALUES (N'1A074FE5-BAB3-4B71-932D-393387E94B5F', N'001', N'张三')
+GO
+INSERT [dbo].[userTable] ([id], [encode], [name]) VALUES (N'F75F5FA1-D8A1-4076-B840-99941DB9038F', N'002', N'李四')
+GO
+INSERT [dbo].[userTable] ([id], [encode], [name]) VALUES (N'FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4', N'003', N'王五')
+GO
+INSERT [dbo].[userTable] ([id],[encode], [name]) VALUES (N'79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A', N'004',null)
+
+```
+
+|                  id                  | encode | name |
+| :----------------------------------: | :----: | :--: |
+| 1A074FE5-BAB3-4B71-932D-393387E94B5F |  001   | 张三 |
+| F75F5FA1-D8A1-4076-B840-99941DB9038F |  002   | 李四 |
+| FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4 |  003   | 王五 |
+| 79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A |  004   | NULL |
+
+
+
+### 使用示例：
+
+
+将查询结果作为行集返回，即只有一个查询行，此行只有一个查询列。
+多个指令可使用 **逗号** 分割开。
+
+
+
+#### RAW模式
+
+##### 示例一 : 基本使用
+
+
+```SQL
+select * from userTable  for xml raw ;
+```
+
+```XML
+<!--普通使用-->
+<row id="1A074FE5-BAB3-4B71-932D-393387E94B5F" encode="001" name="张三" />
+<row id="F75F5FA1-D8A1-4076-B840-99941DB9038F" encode="002" name="李四" />
+<row id="FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4" encode="003" name="王五" />
+<row id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
+```
+
+
+##### 示例二 : ELEMENTS 指令
+
+
+```SQL
+select * from userTable for xml raw,ELEMENTS  ;
+```
+
+```XML
+<!--ELEMENTS指令：检索以元素为中心的 XML-->
+<row>
+  <id>1A074FE5-BAB3-4B71-932D-393387E94B5F</id>
+  <encode>001</encode>
+  <name>张三</name>
+</row>
+<row>
+  <id>F75F5FA1-D8A1-4076-B840-99941DB9038F</id>
+  <encode>002</encode>
+  <name>李四</name>
+</row>
+<row>
+  <id>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4</id>
+  <encode>003</encode>
+  <name>王五</name>
+</row>
+<row>
+  <id>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A</id>
+  <encode>004</encode>
+</row>
+```
+
+
+##### 示例三 : XSINIL 添加指令 ELEMENTS
+
+
+```SQL
+select * from userTable for xml raw,ELEMENTS XSINIL ;
+```
+
+```XML
+<!--XSINIL 添加指令 ELEMENTS：对为 Null 值的数据生成XML-->
+<row xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <id>1A074FE5-BAB3-4B71-932D-393387E94B5F</id>
+  <encode>001</encode>
+  <name>张三</name>
+</row>
+<row xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <id>F75F5FA1-D8A1-4076-B840-99941DB9038F</id>
+  <encode>002</encode>
+  <name>李四</name>
+</row>
+<row xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <id>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4</id>
+  <encode>003</encode>
+  <name>王五</name>
+</row>
+<row xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <id>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A</id>
+  <encode>004</encode>
+  <name xsi:nil="true" />
+</row>
+```
+
+
+
+##### 示例四 : XMLDATA 指令 
+
+```SQL
+select * from userTable for xml raw,XMLDATA  ;
+```
+
+```XML
+<!-- 返回描述文档结构的 XML-DATA 架构 -->
+<Schema name="Schema1" xmlns="urn:schemas-microsoft-com:xml-data" xmlns:dt="urn:schemas-microsoft-com:datatypes">
+  <ElementType name="row" content="empty" model="closed">
+    <AttributeType name="id" dt:type="string" />
+    <AttributeType name="encode" dt:type="string" />
+    <AttributeType name="name" dt:type="string" />
+    <attribute type="id" />
+    <attribute type="encode" />
+    <attribute type="name" />
+  </ElementType>
+</Schema>
+<row xmlns="x-schema:#Schema1" id="1A074FE5-BAB3-4B71-932D-393387E94B5F" encode="001" name="张三" />
+<row xmlns="x-schema:#Schema1" id="F75F5FA1-D8A1-4076-B840-99941DB9038F" encode="002" name="李四" />
+<row xmlns="x-schema:#Schema1" id="FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4" encode="003" name="王五" />
+<row xmlns="x-schema:#Schema1" id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
+```
+
+
+##### 其他 
+
+
+* **FOR XML RAW ('xx')**: 重命名行元素。
+* **ROOT 指令**： 为 FOR XML 生成的 XML 指定根元素。比如：ROOT('MyRoot');
+* **XMLSCHEMA  指令**： 返回  XSD 架构 。比如：可以使用 XMLSCHEMA ('urn:example.com') 格式指定命名空间 。
+* **BINARY BASE64 指令**： 返回在 varbinary(max)、binary  类型列中存储的 以 base64 编码格式返回二进制数据。
+
+
+#### AUTO 模式
+
+##### 示例一:
+
+```SQL
+select * from userTable x for xml AUTO;
+```
+
+```XML
+<!-- 可以为表设置别名 同时结合上述指令  -->
+<userTable id="1A074FE5-BAB3-4B71-932D-393387E94B5F" encode="001" name="张三" />
+<userTable id="F75F5FA1-D8A1-4076-B840-99941DB9038F" encode="002" name="李四" />
+<userTable id="FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4" encode="003" name="王五" />
+<userTable id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
+```
+
+
+
+
+##### 示例二:
+
+
+先指定 OrderHeader 表中的列，再指定 Cust 表中的列， 因此，将创建第一个 `<OrderHeader>` 元素，然后将 `<Cust>` 子元素添加到其中。
+
+```SQL
+elect OrderHeader.CustomerID,
+       OrderHeader.SalesOrderID,
+       OrderHeader.Status,
+       Cust.CustomerID,
+       Cust.CustomerType
+from Sales.Customer Cust, Sales.SalesOrderHeader OrderHeader
+where Cust.CustomerID = OrderHeader.CustomerID
+for xml auto; 
+```
+
+
+
+```XML
+<!-- 可结合 ELEMENTS 等其他指令-->
+<OrderHeader CustomerID="1" SalesOrderID="43860" Status="5">
+  <Cust CustomerID="1" CustomerType="S" />
+</OrderHeader>
+...
+```
+
+
+#### PATH 模式
+
+##### 示例一 
+
+
+```SQL
+select * from userTable   for xml PATH 
+``` 
+
+```XML
+<row>
+  <id>1A074FE5-BAB3-4B71-932D-393387E94B5F</id>
+  <encode>001</encode>
+  <name>张三</name>
+</row>
+<row>
+  <id>F75F5FA1-D8A1-4076-B840-99941DB9038F</id>
+  <encode>002</encode>
+  <name>李四</name>
+</row>
+<row>
+  <id>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4</id>
+  <encode>003</encode>
+  <name>王五</name>
+</row>
+<row>
+  <id>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A</id>
+  <encode>004</encode>
+</row>
+```
+
+
+##### 示例二
+
+
+```SQL
+select * from userTable  for xml PATH('') ;
+```
+
+```XML
+<id>1A074FE5-BAB3-4B71-932D-393387E94B5F</id>
+<encode>001</encode>
+<name>张三</name>
+<id>F75F5FA1-D8A1-4076-B840-99941DB9038F</id>
+<encode>002</encode>
+<name>李四</name>
+<id>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4</id>
+<encode>003</encode>
+<name>王五</name>
+<id>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A</id>
+<encode>004</encode>
+```
+
+
+##### 示例三
+
+
+如果列名称以符号 (@) 开头，并且不包含斜杠标记 (/)，则会创建具有相应列值的元素的属性 row
+在对应的语句中，可根据不同模式对表名、列名进行别名的设置而得到相应得到XML结构
+
+```SQL
+select id as '@part',encode as '@code',name  from userTable  for xml PATH
+```
+
+```XML
+<row part="1A074FE5-BAB3-4B71-932D-393387E94B5F" code="001">
+  <name>张三</name>
+</row>
+<row part="F75F5FA1-D8A1-4076-B840-99941DB9038F" code="002">
+  <name>李四</name>
+</row>
+<row part="FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4" code="003">
+  <name>王五</name>
+</row>
+<row part="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" code="004" />
+```
+
+
+##### 示例四
+
+
+如果列名不以符号 () @ 开头，但包含斜杠标记 (/) ，则列名表示 XML 层次结构。 
+
+
+
+```SQL
+select ID as 'ID1/ID2',ENCODE,NAME  from userTable  for xml PATH
+```
+
+```XML
+<row>
+  <ID1>
+    <ID2>1A074FE5-BAB3-4B71-932D-393387E94B5F</ID2>
+  </ID1>
+  <ENCODE>001</ENCODE>
+  <NAME>张三</NAME>
+</row>
+<row>
+  <ID1>
+    <ID2>F75F5FA1-D8A1-4076-B840-99941DB9038F</ID2>
+  </ID1>
+  <ENCODE>002</ENCODE>
+  <NAME>李四</NAME>
+</row>
+<row>
+  <ID1>
+    <ID2>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4</ID2>
+  </ID1>
+  <ENCODE>003</ENCODE>
+  <NAME>王五</NAME>
+</row>
+<row>
+  <ID1>
+    <ID2>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A</ID2>
+  </ID1>
+  <ENCODE>004</ENCODE>
+</row>
+```
+
+
+##### 示例五
+
+
+如果指定的列名是通配符 (*) ，则插入该列的内容就好像没有指定列名一样。 如果此列不是xml 类型的列，则此列的内容将作为文本节点插入.
+
+```SQL
+select ID as '*',ENCODE,NAME  from userTable  for xml PATH 
+```
+
+
+
+
+```XML
+<row>1A074FE5-BAB3-4B71-932D-393387E94B5F<ENCODE>001</ENCODE><NAME>张三</NAME></row>
+<row>F75F5FA1-D8A1-4076-B840-99941DB9038F<ENCODE>002</ENCODE><NAME>李四</NAME></row>
+<row>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4<ENCODE>003</ENCODE><NAME>王五</NAME></row>
+<row>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A<ENCODE>004</ENCODE></row>
+```
+
+
+##### 示例六
+
+
+如果列名是某个 XPath 节点测试，将如下表所示映射该列的内容。 如果列名是某个 XPath 节点测试，则该列的内容将映射到相应的节点。 如果该列的 SQL 类型是 xml，将返回一个错误。
+
+| 列名 | 行为 |
+| :--: | :--: |
+| text() | 对于名为 text() 的列，该列中的字符串值将被添加为文本节点。 |
+| comment() | 对于名为 comment() 的列，该列中的字符串值将被添加为 XML 注释。 |
+| node() | 对于节点名称 () 的列，结果与列名称是通配符 () * 时的结果相同。 |
+| 处理指令（名称） | 如果列名为处理指令，该列中的字符串值将被添加为此处理指令目标名称的 PI 值。 |
+
+
+
+
+
+```SQL
+select ID as 'text()',ENCODE as 'comment()',NAME as 'node()'  from userTable  for xml PATH 
+```
+
+```XML
+<row>1A074FE5-BAB3-4B71-932D-393387E94B5F<!--001-->张三</row>
+<row>F75F5FA1-D8A1-4076-B840-99941DB9038F<!--002-->李四</row>
+<row>FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4<!--003-->王五</row>
+<row>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A<!--004--></row>
+```
+
+
+##### 示例七
+
+
+```SQL
+select ','+ID   from userTable  for xml PATH('')
+```
+
+
+
+
+```XML
+,1A074FE5-BAB3-4B71-932D-393387E94B5F,F75F5FA1-D8A1-4076-B840-99941DB9038F,FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4,79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A
+```
+
+
+
+#### EXPLICIT 模式
+
+
+具体可参阅[微软官方文档](https://docs.microsoft.com/zh-cn/sql/relational-databases/xml/use-explicit-mode-with-for-xml?view=sql-server-ver16)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,413 @@
+---
+title: '6. SQLServer : 字符串函数'
+date: '2022-06-28 15:49'
+tags: ['SQLServer', '数据库', '字符串函数']
+draft: false
+layout: PostLayout
+summary: '字符串函数是处理文本数据的核心工具，用于截取、拼接、转换和搜索操作'
+---
+
+<TOCInline toc={props.toc} />
+#### ASCII 
+
+返回字符表达式中最左侧的字符的 ASCII 代码值。由于ASCII码码位包含128位数字、字母、特殊符号，因此如果传入参数为汉字等码位超过128的字符时结果会与预期不一致。**UNICODE**函数前128位与**ASCII**一致,此时可以使用 **UNICODE** 函数。
+
+
+
+```SQL
+-- character_expression : char 或 varchar 类型的表达式。
+ ASCII ( character_expression )  
+```
+* character_expression : char 或 varchar 类型的表达式。
+* 返回值 ： int 
+
+
+#### CHAR
+
+
+返回具有指定整数代码的单字节字符，由当前数据库默认排序规则的字符集和编码定义。
+
+
+
+```SQL
+CHAR ( integer_expression )  
+```
+* integer_expression : 0 到 255 之间的整数。 对于此输入范围外的整数表达式或不表示完整字符的整数表达式，CHAR 返回 NULL 值。 字符超出了返回类型的长度时，CHAR 也会返回 NULL 值。  
+* 注解 ： 使用 CHAR 可将控制字符插入字符字符串中。 此表显示了一些常用的控制字符。 
+
+| 控制字符 | 值       |
+| :------: | :------: |
+|  选项卡  | char(9)  |
+|   换行   | char(10) |
+|   回车   | char(13) |
+|   空格   | char(32) |
+
+
+
+#### CHARINDEX 
+
+函数会在第二个字符表达式中搜索一个字符表达式，这将返回第一个表达式（如果发现存在）的开始位置。索引初始值为1,不存在查询时返回0。
+
+
+
+
+```SQL
+CHARINDEX ( expressionToFind , expressionToSearch [ , start_location ] ) 
+```
+* expressionToFind : 一个字符表达式，其中包含要查找的序列。 expressionToFind 限制为 8000 个字符 。
+* expressionToSearch : 要搜索的字符表达式。
+* start_location : 表示搜索开始位置的 integer 或 bigint 表达式 。 如果 start_location 未指定、具有负数值或 0，搜索将从 expressionToSearch 的开头开始 。
+* 返回类型 ： 如果 expressionToSearch 具有一个 nvarchar(max)、varbinary(max) 或 varchar(max) 数据类型，则为 bigint；否则为 int 。
+
+
+
+#### CONCAT 
+
+此函数以端到端的方式返回从串联或联接的两个或更多字符串值生成的字符串。
+
+
+
+```SQL
+CONCAT ( string_value1, string_value2 [, string_valueN ] )  
+```
+* string_value : 要与其他值串联的字符串值。 CONCAT 函数需要至少两个 string_value 自变量，并且不得超过 254 个 string_value 自变量。
+返回类型 ： 长度和类型取决于输入的字符串值。
+
+
+#### CONCAT_WS 
+
+
+**版本最低要求2017**
+此函数以端到端的方式返回从串联或联接的两个或更多字符串值生成的字符串。 它会用第一个函数参数中指定的分隔符分隔连接的字符串值。
+
+
+
+
+```SQL
+CONCAT_WS ( separator, argument1, argument2 [, argumentN]... )
+```
+* 分隔符：任何字符类型的表达式（char、ncharnvarchar 或 varchar）。
+* argument1、argument2、argumentN：任何类型的表达式。 CONCAT_WS 函数需要至少两个自变量，并且不得超过 254 个自变量。
+
+
+
+#### DIFFERENCE 
+
+
+该函数返回一个整数值，用于度量两个不同字符表达式的 SOUNDEX() 值之间的差异。 
+
+DIFFERENCE 比较两个不同的 SOUNDEX 值，并返回一个整数值。 该值用于度量 SOUNDEX 值匹配的程度，范围为 0 到 4。 值为 0 表示 SOUNDEX 值之间的相似性较弱或不相似；4 表示与 SOUNDEX 值非常相似，甚至完全相同。
+
+DIFFERENCE 和 SOUNDEX 具有排序规则敏感度。
+
+
+
+```SQL
+DIFFERENCE ( character_expression , character_expression )  
+```
+* character_expression : 字符数据的字母数字表达式。 character_expression 可以是常量、变量或列。
+* 返回类型 ： int 
+
+
+
+
+#### FORMAT 
+
+
+**2008版本不能使用，最低2012版本**
+返回以指定的格式和可选的区域性格式化的值。 使用 FORMAT 函数将日期/时间和数字值格式化为识别区域设置的字符串。 对于一般的数据类型转换，请使用 CAST 或 CONVERT。
+
+
+
+
+```SQL
+FORMAT( value, format [, culture ] )  
+```
+
+* value : 支持格式化的数据类型的表达式。
+* format : format 参数必须包含一个有效的 .NET Framework 格式字符串，要么作为标准格式字符串（例如，“C”或“D”），要么作为日期值和数值的自定义字符模式（例如，“MMMM DD, yyyy (dddd)”） 。 不支持组合格式。
+* 返回类型 ： nvarchar 或 Null
+
+
+##### 示例一 : 
+
+
+```SQL
+--简单 FORMAT 示例
+DECLARE @d DATE = '11/22/2020';
+SELECT FORMAT( @d, 'd', 'en-US' ) 'US English'  
+      ,FORMAT( @d, 'd', 'en-gb' ) 'Great Britain English'  
+      ,FORMAT( @d, 'd', 'de-de' ) 'German'  
+      ,FORMAT( @d, 'd', 'zh-cn' ) 'Simplified Chinese (PRC)';  
+  
+SELECT FORMAT( @d, 'D', 'en-US' ) 'US English'  
+      ,FORMAT( @d, 'D', 'en-gb' ) 'Great Britain English'  
+      ,FORMAT( @d, 'D', 'de-de' ) 'German'  
+      ,FORMAT( @d, 'D', 'zh-cn' ) 'Chinese (Simplified PRC)';  
+
+--结果如下
+US English  Great Britain English German     Simplified Chinese (PRC)  
+----------  --------------------- ---------- ------------------------  
+11/22/2020  22/11/2020            22.11.2020 2020/11/22 
+  
+US English                  Great Britain English  German                      Chinese (Simplified PRC)  
+--------------------------- ---------------------- --------------------------  ---------------------------------------  
+Sunday, November 22, 2020   22 November 2020       Sonntag, 22. November 2020  2020年11月22日  
+```
+
+
+
+##### 示例二 : 使用自定义格式字符串执行 FORMAT
+
+
+有关这些格式和其他自定义格式的详细信息，请参阅[自定义数字格式字符串](https://docs.microsoft.com/zh-CN/dotnet/standard/base-types/custom-numeric-format-strings)。
+
+
+
+
+```SQL
+DECLARE @d DATE = GETDATE();  
+SELECT FORMAT( @d, 'dd/MM/yyyy', 'en-US' ) AS 'Date' ,
+       FORMAT(123456789,'###-##-####') AS 'Custom Number';  
+       
+----结果如下
+
+Date        Custom Number  
+----------  -------------  
+22/11/2020  123-45-6789  
+```
+
+
+##### 示例三 : 用于数值类型的 FORMAT
+
+
+
+有关这些格式和其他数字格式的详细信息，请参阅[标准数字格式字符串](https://docs.microsoft.com/zh-CN/dotnet/standard/base-types/standard-numeric-format-strings)。
+
+
+
+
+```SQL
+SELECT TOP(5) CurrencyRateID, EndOfDayRate  
+            ,FORMAT(EndOfDayRate, 'N', 'en-us') AS 'Number Format'  
+            ,FORMAT(EndOfDayRate, 'G', 'en-us') AS 'General Format'  
+            ,FORMAT(EndOfDayRate, 'C', 'en-us') AS 'Currency Format'  
+FROM Sales.CurrencyRate  
+ORDER BY CurrencyRateID;  
+```
+
+
+##### 示例四 : 时间数据类型
+
+
+```SQL
+SELECT FORMAT(cast('07:35' as time), N'hh\.mm');  --> returns 07.35  
+SELECT FORMAT(cast('07:35' as time), N'hh\:mm');  --> returns 07:35
+
+SELECT FORMAT(SYSDATETIME(), N'hh:mm tt'); -- returns 03:46 PM
+SELECT FORMAT(SYSDATETIME(), N'hh:mm t'); -- returns 03:46 P
+
+select FORMAT(CAST('2018-01-01 01:00' AS datetime2), N'hh:mm tt') -- returns 01:00 AM
+select FORMAT(CAST('2018-01-01 01:00' AS datetime2), N'hh:mm t')  -- returns 01:00 A
+
+select FORMAT(CAST('2018-01-01 14:00' AS datetime2), N'HH:mm') -- returns 14:00
+
+```
+
+
+#### LEN
+
+
+```SQL
+-- 返回指定字符串表达式的字符数，其中不包含尾随空格
+select LEN("1234"); -- 4
+```
+
+
+#### LEFT 
+
+
+返回字符串中从左边开始指定个数的字符。
+
+
+
+```SQL
+SELECT LEFT('abcdefg',2);  
+```
+
+
+
+#### LOWER、UPPER
+
+
+将大写字符数据转换为小写字符数据后返回字符表达式。
+
+
+
+```SQL
+SELECT LOWER('ABC'); -- abc
+SELECT UPPER('abc'); -- ABC
+```
+
+
+
+#### LTRIM、RTRIM 
+
+删除字符串开头(结尾)的空格字符char(32)或其他指定字符。
+
+
+
+```SQL
+LTRIM ( character_expression , [ characters ] )
+RTRIM ( character_expression , [ characters ] )
+```
+* character_expression : 字符或二进制数据的表达式
+* characters : SQL Server 2022 (16.x) 预览版及更高版本
+  
+
+
+#### REPLACE 
+
+
+用另一个字符串值替换所有出现的指定字符串值
+
+
+
+```SQL
+-- 语法
+REPLACE( string_expression , string_pattern , string_replacement ) 
+
+-- 示例
+SELECT REPLACE('123123','3','7'); -- 127127
+```   
+
+
+
+#### REPLICATE
+
+
+重复指定次数的字符串值
+
+
+
+```SQL
+-- 语法
+REPLICATE ( string_expression , integer_expression )   
+
+-- 示例
+SELECT REPLICATE()
+```
+
+
+
+#### REVERSE 
+
+
+返回字符串值的反向顺序
+
+
+
+
+```SQL
+select REVERSE('123'); -- 321
+```
+
+
+#### RIGHT 
+
+返回具有指定字符数的字符串的右边部分
+
+
+
+
+```SQL
+SELECT RIGHT('1234',2); -- 34
+```
+
+
+#### STR
+
+
+返回从数字数据转换而来的字符数据。字符数据右对齐，具有指定的长度和小数精度
+
+
+
+```SQL
+select str('12',3); -- len(str('12',3)) = 3
+```
+
+
+
+#### SUTFF
+
+
+STUFF函数将一个字符串插入到另一个字符串中。它在开始位置删除第一个字符串中指定长度的字符，然后在开始位置将第二个字符串插入第一个字符串中。
+
+
+
+```SQL
+-- 语法
+STUFF ( character_expression , start , length , replaceWith_expression )  
+
+-- 示例
+SELECT STUFF('abcdef', 6, 0, 'ijklmn');  -- abcdeijklmnf
+SELECT STUFF('abcdef', 1, 0, 'ijklmn');  -- abcdeijklmnf
+SELECT STUFF('abcdef', 2, 3, 'ijklmn');  -- aijklmnef
+```
+* character_expression ： 第一个字符串
+* start : 第一个字符串位置(SQL中第一个索引为1)
+* length : 删除的字符个数
+* 第二个字符串，将插入在*start*之前
+
+
+
+#### SUBSTRING 
+
+
+select SUBSTRING('1234',2,2); -- 23
+
+
+
+#### UNICODE
+
+
+为输入表达式的第一个字符返回Unicode标准定义的整数值
+
+
+
+
+```JS
+select UNICODE('A'); -- 65
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

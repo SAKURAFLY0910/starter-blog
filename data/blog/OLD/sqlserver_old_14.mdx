@@ -1,0 +1,152 @@
+---
+title: '14. SQLServer : 游标学习'
+date: '2022-11-12 14:27'
+tags: ['SQLServer', '数据库', '游标']
+draft: false
+layout: PostLayout
+summary: '游标是一种数据库对象，用于逐行遍历查询结果集，支持对单行数据进行精确操作（如更新、删除）。它适用于需要逐行处理的场景，如数据校验、批量操作或复杂业务逻辑。使用时需通过DECLARE CURSOR定义游标，OPEN打开结果集，FETCH逐行提取数据，最后用CLOSE和DEALLOCATE释放资源。注意：游标性能较低，应优先考虑集合操作（如JOIN或子查询），仅在必要时使用'
+---
+
+<TOCInline toc={props.toc} />
+
+### [CLOSE](https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/close-transact-sql?view=sql-server-ver16) 
+
+
+释放当前结果集，然后解除定位游标的行上的游标锁定，从而关闭一个开放的游标。 CLOSE 将保留数据结构以便重新打开，但在重新打开游标之前，不允许提取和定位更新。 必须对打开的游标发布 CLOSE；不允许对仅声明或已关闭的游标执行 CLOSE。
+
+```SQL 
+DECLARE Employee_Cursor CURSOR FOR  
+SELECT EmployeeID, Title FROM AdventureWorks2012.HumanResources.Employee;  
+OPEN Employee_Cursor;  
+FETCH NEXT FROM Employee_Cursor;  
+WHILE @@FETCH_STATUS = 0  
+  BEGIN  
+      FETCH NEXT FROM Employee_Cursor;  
+  END;  
+CLOSE Employee_Cursor;  
+DEALLOCATE Employee_Cursor;  
+GO   
+```
+
+
+### [DEALLOCATE](https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/deallocate-transact-sql?view=sql-server-ver16) 
+
+
+删除游标引用。 当释放最后的游标引用时，组成该游标的数据结构由 Microsoft SQL Server 释放。
+DEALLOCATE `<cursor_variable_name>` 语句只删除对游标命名变量的引用。 直到批处理、存储过程或触发器结束时变量离开作用域，才释放变量。 
+在 DEALLOCATE `<cursor_variable_name>` 语句之后，可以使用 SET 语句将变量与另一个游标关联。
+
+```SQL
+-- DECLARE CURSOR 语句分配游标并将其与游标名称关联
+DECLARE abc SCROLL CURSOR FOR  
+SELECT * FROM Person.Person;  
+
+-- 将游标设置为游标变量
+DECLARE @MyCrsrRef CURSOR;  
+SET @MyCrsrRef = abc;  
+
+
+-- 不定义游标名称而创建游标并将其与变量关联
+DECLARE @MyCursor CURSOR;  
+SET @MyCursor = CURSOR LOCAL SCROLL FOR  
+SELECT * FROM Person.Person;  
+
+  
+-- 示例
+DECLARE @MyCursor CURSOR;  
+SET @MyCursor = CURSOR LOCAL SCROLL FOR  
+    SELECT * FROM Sales.SalesPerson;  
+  
+DEALLOCATE @MyCursor;  
+  
+SET @MyCursor = CURSOR LOCAL SCROLL FOR  
+    SELECT * FROM Sales.SalesTerritory;  
+GO  
+
+
+
+-- 以下脚本显示游标如何持续到最后的名称或持续到引用它们的变量已释放
+DECLARE abc CURSOR GLOBAL SCROLL FOR  
+    SELECT * FROM Sales.SalesPerson;  
+OPEN abc;  
+GO  
+-- Reference the named cursor with a cursor variable.  
+DECLARE @MyCrsrRef1 CURSOR;  
+SET @MyCrsrRef1 = abc;  
+-- Now deallocate the cursor reference.  
+DEALLOCATE @MyCrsrRef1;  
+-- Cursor abc still exists.  
+FETCH NEXT FROM abc;  
+GO  
+-- Reference the named cursor again.  
+DECLARE @MyCrsrRef2 CURSOR;  
+SET @MyCrsrRef2 = abc;  
+-- Now deallocate cursor name abc.  
+DEALLOCATE abc;  
+-- Cursor still exists, referenced by @MyCrsrRef2.  
+FETCH NEXT FROM @MyCrsrRef2;  
+-- Cursor finally is deallocated when last referencing  
+-- variable goes out of scope at the end of the batch.  
+GO  
+-- Create an unnamed cursor.  
+DECLARE @MyCursor CURSOR;  
+SET @MyCursor = CURSOR LOCAL SCROLL FOR  
+SELECT * FROM Sales.SalesTerritory;  
+-- The following statement deallocates the cursor  
+-- because no other variables reference it.  
+DEALLOCATE @MyCursor;  
+```
+
+
+
+### [DECLARE CURSOR](https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/declare-cursor-transact-sql?view=sql-server-ver16)
+
+
+```SQL
+ISO Syntax  
+DECLARE cursor_name [ INSENSITIVE ] [ SCROLL ] CURSOR   
+    FOR select_statement   
+    [ FOR { READ ONLY | UPDATE [ OF column_name [ ,...n ] ] } ]  
+[;]  
+Transact-SQL Extended Syntax  
+DECLARE cursor_name CURSOR [ LOCAL | GLOBAL ]   
+    [ FORWARD_ONLY | SCROLL ]   
+    [ STATIC | KEYSET | DYNAMIC | FAST_FORWARD ]   
+    [ READ_ONLY | SCROLL_LOCKS | OPTIMISTIC ]   
+    [ TYPE_WARNING ]   
+    FOR select_statement   
+    [ FOR UPDATE [ OF column_name [ ,...n ] ] ]  
+[;]  
+```
+
+* cursor_name : 游标的名称
+* LOCAL : 指定该游标的范围对在其中创建它的批处理、存储过程或触发器是局部的
+* GLOBAL : 指定该游标范围对连接是全局的。 在由此连接执行的任何存储过程或批处理中，都可以引用该游标名称。 该游标仅在断开连接时隐式释放。
+* FORWARD_ONLY : 指定游标只能向前移动，并从第一行滚动到最后一行。
+* STATIC : 指定游标始终以第一次打开时的样式显示结果集，并制作数据的临时副本，供游标使用。
+* KEYSET : 指定当游标打开时，游标中行的成员身份和顺序已经固定。 
+* ....
+
+
+
+### 示例
+
+#### 使用简单的游标和语法
+
+
+在打开该游标时所生成的结果集包括表中的所有行和所有列。 可以更新该游标，并且所有的更新和删除都会在对该游标所做的提取操作中表现出来。 FETCH NEXT 是唯一可用的提取选项，因为未指定 SCROLL 选项
+
+
+
+
+```SQL
+DECLARE vend_cursor CURSOR  
+    FOR SELECT * FROM Purchasing.Vendor  
+OPEN vend_cursor  
+FETCH NEXT FROM vend_cursor;  
+```
+
+
+
+
+

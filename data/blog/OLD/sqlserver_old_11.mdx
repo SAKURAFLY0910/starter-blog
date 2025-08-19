@@ -1,0 +1,264 @@
+---
+title: '11. SQLServer : 运算符'
+date: '2022-11-10 15:32'
+tags: ['SQLServer', '数据库', '运算符']
+draft: false
+layout: PostLayout
+summary: 运算符是用于执行数据运算和比较的特殊符号，主要分为算术运算符（+、-、*、/）、比较运算符（=、>、<）、逻辑运算符（AND、OR、NOT）和位运算符（&、|）等。它们用于构建表达式，实现数据计算、条件筛选和逻辑判断，常见于SELECT查询、WHERE条件和存储过程等场景''
+
+---
+
+<TOCInline toc={props.toc} />
+
+### 运算符的优先级
+
+
+如果一个表达式中的两个运算符有相同的优先级别，则按照它们在表达式中的位置对其从左到右进行求值。 例如，在下面的 SET 语句所使用的表达式中，在加运算符之前先对减运算符进行求值。
+
+
+<table aria-label="表 1" class="table table-sm">
+<thead>
+<tr>
+<th>级别</th>
+<th>运算符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>~（位非）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>*（乘）、/（除）、%（取模）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>+（正）、-（负）、+（加）、+（串联）、-（减）、&amp;（位与）、^（位异或）、|（位或）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>=、&gt;&lt;&gt;=、&lt;=、&lt;&gt;!=、!&gt;!&lt;（比较运算符）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>NOT</td>
+</tr>
+<tr>
+<td>6</td>
+<td>AND</td>
+</tr>
+<tr>
+<td>7</td>
+<td>ALL、ANY、BETWEEN、IN、LIKE、OR、SOME</td>
+</tr>
+<tr>
+<td>8</td>
+<td>=（赋值）</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+### 一元运算符
+
+
+
+<table aria-label="一元运算符 - 正" class="table table-sm">
+<thead>
+<tr>
+<th>运算符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/unary-operators-positive?view=sql-server-ver16" data-linktype="relative-path">+（正）</a></td>
+<td>数值为正。</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/unary-operators-negative?view=sql-server-ver16" data-linktype="relative-path">-（负）</a></td>
+<td>数值为负。</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/bitwise-not-transact-sql?view=sql-server-ver16" data-linktype="relative-path">~（位非）</a></td>
+<td>返回数字的非。</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+### 集运算符
+
+#### 使用说明
+
+* UNION ALL - 包括重复行
+* UNION - 排除重复行
+
+#### 基本规则
+
+* 所有查询中的列数和列的顺序必须相同。
+* 数据类型必须兼容
+
+
+
+### 算数运算符
+
+
+```SQL
+declare @mm int =3;
+declare @nn int =4;
+declare @zz nvarchar(255) ='5';
+select -@nn+@mm   -- 输出：-1
+Set  @mm += @mm    -- 相当于： @mm = @mm + @mm 
+print(@mm)  -- 输出：6
+print(@mm % @nn) -- 6 % 4 
+```
+
+
+### 比较运算符
+
+
+<table aria-label="比较运算符 (Transact-SQL)" class="table table-sm">
+<thead>
+<tr>
+<th>运算符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/equals-transact-sql?view=sql-server-ver16" data-linktype="relative-path">=（等于）</a></td>
+<td>等于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/greater-than-transact-sql?view=sql-server-ver16" data-linktype="relative-path">&gt;（大于）</a></td>
+<td>大于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/less-than-transact-sql?view=sql-server-ver16" data-linktype="relative-path">&lt;（小于）</a></td>
+<td>小于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/greater-than-or-equal-to-transact-sql?view=sql-server-ver16" data-linktype="relative-path">&gt;=（大于或等于）</a></td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/less-than-or-equal-to-transact-sql?view=sql-server-ver16" data-linktype="relative-path">&lt;=（小于或等于）</a></td>
+<td>小于或等于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/not-equal-to-transact-sql-traditional?view=sql-server-ver16" data-linktype="relative-path">&lt;&gt;（不等于）</a></td>
+<td>不等于</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/not-equal-to-transact-sql-exclamation?view=sql-server-ver16" data-linktype="relative-path">!=（不等于）</a></td>
+<td>不等于（非 ISO 标准）</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/not-less-than-transact-sql?view=sql-server-ver16" data-linktype="relative-path">!&lt;（不小于）</a></td>
+<td>不小于（非 ISO 标准）</td>
+</tr>
+<tr>
+<td><a href="https://learn.microsoft.com/zh-cn/sql/t-sql/language-elements/not-greater-than-transact-sql?view=sql-server-ver16" data-linktype="relative-path">!&gt;（不大于）</a></td>
+<td>不大于（非 ISO 标准）</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+### 字符串运算符
+
+#### 字符串串联
+
+```SQL
+DECLARE @x VARCHAR(4000) = REPLICATE('x', 4000)
+DECLARE @z VARCHAR(8000) = REPLICATE('z',8000)
+DECLARE @y VARCHAR(max);
+ 
+SET @y = '';
+SET @y += @x + @z;
+SELECT LEN(@y) AS Y; -- 8000
+```
+
+
+####  通配符-百分比字符 %
+
+
+```SQL
+SELECT FirstName, LastName  
+FROM Person.Person  
+WHERE FirstName LIKE 'Dan%'; 
+```
+
+
+
+#### 通配符-中括号 []
+
+
+```SQL
+-- 返回以 m 字母开头的名称。 [n-z] 指定第二个字母必须是 n 到 z 范围内的某个字母
+SELECT name FROM sys.databases
+WHERE name LIKE 'm[n-z]%';
+
+-- 查找其地址中有四位邮政编码的所有 Adventure Works 雇员的 ID 和姓名
+SELECT e.BusinessEntityID, p.FirstName, p.LastName, a.PostalCode  
+FROM HumanResources.Employee AS e  
+INNER JOIN Person.Person AS p ON e.BusinessEntityID = p.BusinessEntityID  
+INNER JOIN Person.BusinessEntityAddress AS ea ON e.BusinessEntityID = ea.BusinessEntityID  
+INNER JOIN Person.Address AS a ON a.AddressID = ea.AddressID  
+WHERE a.PostalCode LIKE '[0-9][0-9][0-9][0-9]';  
+ 
+```
+
+
+
+#### 通配符-无需匹配的字符串 ^ 
+
+
+匹配不在方括号 [^] 之间指定的范围或集合内的任何单个字符
+
+```SQL
+-- 使用 [^] 运算符查找 Contact 表中名字以 Al 开头且第三个字母不是a的前5名用户
+SELECT TOP 5 FirstName, LastName  
+FROM Person.Person  
+WHERE FirstName LIKE 'Al[^a]%';  
+
+
+-- 使用 [^] 运算符来查找不以字母或数字开头的字符串
+SELECT [object_id], OBJECT_NAME(object_id) AS [object_name], name, column_id 
+FROM sys.columns 
+WHERE name LIKE '[^0-9A-z]%';
+```
+
+
+#### 通配符- 下划线(匹配一个字符)  _
+
+
+
+```SQL
+-- 返回以字母 m 开头且第三个字母为 d 的所有数据库名称
+SELECT name FROM sys.databases
+WHERE name LIKE 'm_d%';
+
+-- 返回 db_owner、db_ddladmin 等固定数据库角色的名称(此时的下划线被视为通配符)
+SELECT name FROM sys.database_principals
+WHERE name LIKE 'db_%';
+
+-- 过滤出以 db_ 开头的数据库角色名(转义操作)
+SELECT name FROM sys.database_principals
+WHERE name LIKE 'db[_]%';
+```
+
+
+

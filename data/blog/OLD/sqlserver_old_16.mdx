@@ -1,0 +1,114 @@
+---
+title: '16. SQLServer : 函数'
+date: '2022-11-14 17:48'
+tags: ['SQLServer', '数据库', '函数']
+draft: false
+layout: PostLayout
+summary: '函数是一种可封装特定逻辑并返回结果的数据库对象，主要分为标量函数（返回单个值）和表值函数（返回结果集）。它用于简化复杂计算、提高代码复用性，常见于数据转换、条件筛选等场景。通过CREATE FUNCTION定义后，可在查询中直接调用。使用时需注意性能影响，避免在大量数据处理中使用复杂函数，优先考虑存储过程或内联表值函数以提高效率'
+---
+<TOCInline toc={props.toc}  />
+
+### [表值函数](https://learn.microsoft.com/zh-cn/sql/t-sql/statements/create-function-transact-sql?view=sql-server-ver16)
+
+#### 内联表值函数
+
+```SQL
+IF OBJECT_ID (N'Sales.ufn_SalesByStore', N'IF') IS NOT NULL
+    DROP FUNCTION Sales.ufn_SalesByStore;
+GO
+CREATE FUNCTION Sales.ufn_SalesByStore (@storeid int)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT P.ProductID, P.Name, SUM(SD.LineTotal) AS 'Total'
+    FROM Production.Product AS P
+    JOIN Sales.SalesOrderDetail AS SD ON SD.ProductID = P.ProductID
+    JOIN Sales.SalesOrderHeader AS SH ON SH.SalesOrderID = SD.SalesOrderID
+    JOIN Sales.Customer AS C ON SH.CustomerID = C.CustomerID
+    WHERE C.StoreID = @storeid
+    GROUP BY P.ProductID, P.Name
+);
+```
+
+
+
+#### 多语句表值函数
+
+```SQL
+IF OBJECT_ID (N'dbo.ufn_FindReports', N'TF') IS NOT NULL
+    DROP FUNCTION dbo.ufn_FindReports;
+GO
+CREATE FUNCTION dbo.ufn_FindReports (@InEmpID INTEGER)
+RETURNS @retFindReports TABLE
+(
+    EmployeeID int primary key NOT NULL,
+    FirstName nvarchar(255) NOT NULL,
+    LastName nvarchar(255) NOT NULL,
+    JobTitle nvarchar(50) NOT NULL,
+    RecursionLevel int NOT NULL
+)
+--Returns a result set that lists all the employees who report to the
+--specific employee directly or indirectly.*/
+AS
+BEGIN
+WITH EMP_cte(EmployeeID, OrganizationNode, FirstName, LastName, JobTitle, RecursionLevel) -- CTE name and columns
+    AS (
+        SELECT e.BusinessEntityID, e.OrganizationNode, p.FirstName, p.LastName, e.JobTitle, 0 -- Get the initial list of Employees for Manager n
+        FROM HumanResources.Employee e
+INNER JOIN Person.Person p
+ON p.BusinessEntityID = e.BusinessEntityID
+        WHERE e.BusinessEntityID = @InEmpID
+        UNION ALL
+        SELECT e.BusinessEntityID, e.OrganizationNode, p.FirstName, p.LastName, e.JobTitle, RecursionLevel + 1 -- Join recursive member to anchor
+        FROM HumanResources.Employee e
+            INNER JOIN EMP_cte
+            ON e.OrganizationNode.GetAncestor(1) = EMP_cte.OrganizationNode
+INNER JOIN Person.Person p
+ON p.BusinessEntityID = e.BusinessEntityID
+        )
+-- copy the required columns to the result of the function
+    INSERT @retFindReports
+    SELECT EmployeeID, FirstName, LastName, JobTitle, RecursionLevel
+    FROM EMP_cte
+    RETURN
+END;
+GO
+```
+
+
+
+
+
+### 标量函数
+
+```SQL
+IF OBJECT_ID (N'dbo.ufnGetInventoryStock', N'FN') IS NOT NULL
+    DROP FUNCTION ufnGetInventoryStock;
+GO
+CREATE FUNCTION dbo.ufnGetInventoryStock(@ProductID int)
+RETURNS int
+AS
+-- Returns the stock level for the product.
+BEGIN
+    DECLARE @ret int;
+    SELECT @ret = SUM(p.Quantity)
+    FROM Production.ProductInventory p
+    WHERE p.ProductID = @ProductID
+        AND p.LocationID = '6';
+    IF (@ret IS NULL)
+        SET @ret = 0;
+    RETURN @ret;
+END;
+```
+```SQL
+SELECT ProductModelID, Name, dbo.ufnGetInventoryStock(ProductID)AS CurrentSupply
+FROM Production.Product
+WHERE ProductModelID BETWEEN 75 and 80;
+```
+
+
+
+
+### 系统函数
+

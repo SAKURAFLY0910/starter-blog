@@ -1,0 +1,39 @@
+---
+title: 'TypeScript编译安装'
+date: '2022-09-18 00:24'
+tags: ['TypeScript']
+draft: false
+layout: PostLayout
+summary: 'TypeScript初始化和编译'
+---
+
+```JS
+npm install -g typescript
+npm install  gulp-typescript -D
+```
+```JS
+// gulpfile.js
+var ts = require('gulp-typescript');
+
+gulp.task('watch', function () {
+  //sass监听
+  gulp.watch('src/css/sass/*.scss', function () {
+    return gulp
+      .src('src/css/sass/*.scss')
+      .pipe(sass())
+      .pipe(gulp.dest('dist/css'));
+  });
+  //less监听
+  gulp.watch('src/css/less/*.less', function () {
+    return gulp
+      .src('src/css/less/*.less')
+      .pipe(less())
+      .pipe(gulp.dest('dist/css/'));
+  });
+  // Typescript
+  gulp.watch('src/js/ts/*.ts', function () {
+    return gulp.src('src/js/ts/*.ts').pipe(ts()).pipe(gulp.dest('dist/js/'));
+  });
+});
+```
+

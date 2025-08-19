@@ -1,0 +1,59 @@
+---
+title: 'typecho常用自定义基本操作'
+date: '2022-01-06 10:58'
+tags: ['博客', 'Typecho', '迁移','主题']
+draft: false
+layout: PostLayout
+summary: 'typecho常用自定义基本操作'
+---
+<TOCInline toc={props.toc} />
+
+### 更换公共头像地址Gravatr镜像源:
+
+在typecho根目录下**config.inc.php**文件最后插入:
+```php
+define('__TYPECHO_GRAVATAR_PREFIX__', 'https://gravatar.cat.net/avatar');
+```
+
+　更多镜像源请参阅:[Gravatr镜像源](http://www.sakurafly.com/archives/15/)
+
+### 自定义上传附件目录:
+
+
+在typecho根目录下**config.inc.php**文件最后插入:
+```php
+/** 后台路径(相对路径) */
+define('__TYPECHO_UPLOAD_DIR__', '/www/static');
+/** 反向代理(cdn) */
+define('__TYPECHO_UPLOAD_URL__', 'https://xxxxx.upyun.com');
+```
+如此修改之后所生成的链接就是: https://xxxxx.upyun.com/www/static/...
+
+
+### 后台路径自定义:
+
+  
+ 
+后台路径字定义，用于修改程序后台地址，提高安全性。   
+
+默认typecho后台地址是admin，如果我们想改成typecho-admin，那么首先登陆服务器把admin文件夹名字改成typecho-admin。
+
+然后在**config.inc.php**找到define('__TYPECHO_ADMIN_DIR__', '/admin/');将其中的admin改成typecho-admin即可。
+
+
+#### 强制https
+
+
+当你用https的时候typecho会自动识别的，但是因为大家的环境千差万别，会有识别错误的情况，比如你https都布置好了，但是程序依旧只会加载http的，所以该常量的作用就是强制程序使用https，解决识别错误的情况。
+```python
+# config.inc.php 文件
+define('__TYPECHO_SECUER__', true);
+```
+
+
+
+
+
+
+
+

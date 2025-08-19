@@ -1,0 +1,107 @@
+---
+title: 'Mockjax模拟Ajax响应数据'
+date: '2021-07-07 9:02'
+tags: ['JavaScript', 'Web','Mockjax', 'Ajax']
+draft: false
+layout: PostLayout
+summary: 'Mockjax是一个jQuery插件，可以模拟Ajax请求的响应数据，方便前端开发和测试。'
+---
+
+
+> jQuery Mockjax 插件提供了简单而且极度灵活的接口，用来模拟ajax的请求和回应.
+> 在引入Mockajx之前需要先引入jquery.
+
+CDN引入使用**[BootCDN](https://www.bootcdn.cn/jquery-mockjax/)**,下载可在**[GitHub](https://github.com/jakerella/jquery-mockjax)**下载.
+```java
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery-mockjax/2.6.0/jquery.mockjax.min.js">
+</script>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery-mockjax/2.6.0/jquery.mockjax.js">
+</script>
+```
+一些不支持JSON转换的浏览器比如IE 6,7,8等,需要额外引入[json.js](https://github.com/douglascrockford/JSON-js).
+### 有以下Ajax请求需要响应数据:
+```java
+  $.ajax({
+        url: '/sakura/user/login',
+        data: { usercode: 'admin', password: 'admin' },
+        type: 'POST',
+        async: false,
+        success: function (res) {
+          console.log(res);
+        },
+      });
+```  
+
+### 只需要设置:
+```java
+//设置响应数据,如果是多个虚拟mockajx设置,可使用$.mockajx([{options},{...}])   
+//$.mockajx({options})
+Const ID=$.mockjax({//返回索引
+      url: '/sakura/*',//可通过通配符 正则 匹配
+      //模拟网络和服务器延迟（以毫秒为单位）的整数-number
+      responseTime: '500', 
+      responseText: JSON.stringify({
+        status: 200,
+        msg: '数据获取成功',
+      }), //响应的模拟文本或模拟对象文字-String
+    });
+```
+> 如果响应数据是从文件获取,而不是手动设置,可设置proxy属性,值为.json文件路径. 如果同时设置proxy和responseText,则proxy配置优先执行.
+```java
+//通过.json文件获取响应数据   
+ $.mockjax({
+      url: '/sakura/*',
+      status: 200, //number
+      statusText: 'success', //服务器响应代码描述-String
+      responseTime: '500', //模拟网络和服务器延迟（以毫秒为单位）的整数-number
+      contentType: 'application/json;', //指定响应的内容类型-String
+      proxy: './json.json', //数据获取路径
+    });
+```
+<br />
+```java
+//.json文件
+{
+  "data": {
+    "aa": 111,
+    "bb": 222
+  }
+}
+```
+### options默认参数设置对象:
+```java
+$.mockjaxSettings = {
+  logging:       true,
+  status:        200,
+  statusText:    "OK",
+  responseTime:  500,
+  isTimeout:     false,
+  throwUnmocked: false,
+  contentType:   'text/plain',
+  response:      '',
+  responseText:  '',
+  responseXML:   '',
+  proxy:         '',
+  proxyType:     'GET',
+  lastModified:  null,
+  etag:          '',
+  headers: {
+    etag: 'IJF@H#@923uf8023hFO@I#H#',
+    'content-type' : 'text/plain'
+  }
+};
+```
+### 外部函数:
+```java
+$.mockjax.clear(number|String ):清除模拟请求,若无参数,清除全部模拟请求(void )
+                         number:清除具有该 ID 的处理程序
+                         String: 清除具有该匹配 URL 的处理程序
+
+$.mockjax.mockedAjaxCalls():返回所有模拟 ajax 调用的数组(Array<Object>)
+```
+
+
+
+

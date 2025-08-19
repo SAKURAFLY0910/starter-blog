@@ -1,0 +1,65 @@
+---
+title: 'Google Guava Cache'
+date: '2022-02-14 22:57'
+tags: ['Java', 'JWT']
+draft: false
+layout: PostLayout
+summary: 'Java 缓存工具类'
+---
+
+```java
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.1.1-jre</version>
+    </dependency>
+```
+
+### 基本工具类
+
+```java
+package com.sakura.Utils;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 基于Guava Cache缓存类
+ * */
+public class TokenCache {
+        private static LoadingCache<String,String> localCache= CacheBuilder.newBuilder()
+                .initialCapacity(1000)//初始化缓存项为1000
+                .maximumSize(10000)//设置缓存项最大值不超过10000
+                .expireAfterAccess(365, TimeUnit.DAYS)//定时回收  规定时间没有操作就会被读写就会被回收
+                .build(new CacheLoader<String, String>() {
+                    //当缓存没有值的时候执行load方法
+                    @Override
+                    public String load(String s) throws Exception {
+                        return "null";
+                    }
+                });
+        public static  void  set(String key,String value){
+            localCache.put(key,value);
+        }
+        public static String get(String key){
+            String value=null;
+            try {
+                value= localCache.get(key);
+                if("null".equals(value)){
+                    return null;
+                }
+                return value;
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+}
+
+```
