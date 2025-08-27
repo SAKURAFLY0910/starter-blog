@@ -1,7 +1,7 @@
 ---
 title: '13. SQLServer : 常规命令'
 date: '2022-11-11 18:02'
-tags: ['SQLServer', '数据库', 'EXECUTE','EXEC']
+tags: ['SQLServer', 'Database', 'EXECUTE','EXEC']
 draft: false
 layout: PostLayout
 summary: EXECUTE（EXEC）是SQL Server中执行存储过程或动态SQL语句的关键命令。它用于调用预编译的存储过程（提高性能）或运行动态生成的SQL（灵活处理不确定查询条件）。通过EXEC 过程名 参数调用存储过程，或用EXEC('SQL语句')执行动态SQL。支持输入/输出参数，但动态SQL需注意SQL注入风险，建议使用参数化查询（sp_executesql）。典型应用于业务逻辑封装、权限控制和复杂查询构建。
