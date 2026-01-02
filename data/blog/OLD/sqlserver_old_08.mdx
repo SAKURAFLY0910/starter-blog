@@ -6,19 +6,18 @@ layout: PostLayout
 draft: false
 summary: '变量是 T-SQL 编程中用于临时存储数据的核心元素.'
 ---
+
 <TOCInline toc={props.toc} />
 
 ### 表达式
-#### NULLIF 
 
+#### NULLIF
 
 如果两个表达式不相等，则 NULLIF 返回第一个表达式。如果表达式相等，则 NULLIF 返回第一个表达式类型的空值。
 
-
 ```SQL
-NULLIF ( expression , expression )  
+NULLIF ( expression , expression )
 ```
-
 
 ### 变量
 
@@ -50,30 +49,24 @@ ORDER BY BusinessEntityID DESC;
 SELECT @EmpIDVariable;
 ```
 
-
 #### Set
-
 
 将先前使用DECLARE语句创建的指定局部变量设置为指定值
 
-
-
-
 ```SQL
 -- 赋值操作
-DECLARE @myvar CHAR(20);  
-SET @myvar = 'This is a test';  
-SELECT @myvar;  
+DECLARE @myvar CHAR(20);
+SET @myvar = 'This is a test';
+SELECT @myvar;
 
 -- 从查询中赋值
-DECLARE @rows INT;  
-SET @rows = (SELECT COUNT(*) FROM Sales.Customer);  
+DECLARE @rows INT;
+SET @rows = (SELECT COUNT(*) FROM Sales.Customer);
 SELECT @rows;
 
 ```
 
-
-#### SELECT 
+#### SELECT
 
 ```SQL
 -- 初始化赋值之后 使用select赋值
@@ -88,10 +81,5 @@ SELECT @var1 AS 'ProductName';
 
 #### DECLARE
 
-
 变量是在批处理或过程的主体中用 DECLARE 语句声明的，并用 SET 或 SELECT 语句赋值。 游标变量可使用此语句声明，并可用于其他与游标相关的语句。 除非在声明中提供值，否则声明之后所有变量将初始化为 NULL。
 变量的名称。 变量名必须以 at 符 (@) 开头。 局部变量名称必须符合标识符规则。
-
-
-
-

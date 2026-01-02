@@ -13,39 +13,34 @@ summary: '控制流语言元素是T-SQL编程中用于管理代码执行逻辑�
 
 包括一系列的 Transact-SQL 语句，从而可以执行一组 Transact-SQL 语句。 BEGIN 和 END 是控制流语言的关键字。
 
-
-
 ```SQL
 -- 语法
-BEGIN  
-    { sql_statement | statement_block }   
-END  
+BEGIN
+    { sql_statement | statement_block }
+END
 
 
 --示例
 USE AdventureWorks2012
-GO  
+GO
 BEGIN TRANSACTION
-GO  
-IF @@TRANCOUNT = 0  
-BEGIN  
-    SELECT FirstName, MiddleName   
+GO
+IF @@TRANCOUNT = 0
+BEGIN
+    SELECT FirstName, MiddleName
     FROM Person.Person WHERE LastName = 'Adams';
     ROLLBACK TRANSACTION;
     PRINT N'Rolling back the transaction two times would cause an error.';
 END;
 ROLLBACK TRANSACTION;
 PRINT N'Rolled back the transaction.';
-GO  
-/*  
-Rolled back the transaction.  
-*/  
+GO
+/*
+Rolled back the transaction.
+*/
 ```
 
-
-
-#### BREAK 
-
+#### BREAK
 
 BREAK 将退出当前 WHILE 循环。 如果当前循环嵌套在另一个循环中，BREAK 将只退出当前循环，并且将控制给予外部循环中的下一个语句。
 
@@ -62,260 +57,231 @@ BEGIN
 END
 ```
 
-
-#### ELSE (IF...ELSE) 
+#### ELSE (IF...ELSE)
 
 ```SQL
 -- 语法
-IF Boolean_expression   
-     { sql_statement | statement_block }   
-[ ELSE   
-     { sql_statement | statement_block } ]   
+IF Boolean_expression
+     { sql_statement | statement_block }
+[ ELSE
+     { sql_statement | statement_block } ]
 
 
 -- 示例一
-IF 1 = 2 PRINT 'Boolean_expression is true.'  
-ELSE PRINT 'Boolean_expression is false.' ;  
-GO  
+IF 1 = 2 PRINT 'Boolean_expression is true.'
+ELSE PRINT 'Boolean_expression is false.' ;
+GO
 
 -- 示例二
-USE AdventureWorks2012;  
-GO  
-IF   
-(SELECT COUNT(*) FROM Production.Product WHERE Name LIKE 'Touring-3000%' ) > 5  
-PRINT 'There are more than 5 Touring-3000 bicycles.'  
-ELSE PRINT 'There are 5 or less Touring-3000 bicycles.' ;  
-GO  
+USE AdventureWorks2012;
+GO
+IF
+(SELECT COUNT(*) FROM Production.Product WHERE Name LIKE 'Touring-3000%' ) > 5
+PRINT 'There are more than 5 Touring-3000 bicycles.'
+ELSE PRINT 'There are 5 or less Touring-3000 bicycles.' ;
+GO
 
 -- 示例三
-USE AdventureWorks2012;  
-GO  
-DECLARE @AvgWeight DECIMAL(8,2), @BikeCount INT  
-IF   
-(SELECT COUNT(*) FROM Production.Product WHERE Name LIKE 'Touring-3000%' ) > 5  
-BEGIN  
-   SET @BikeCount =   
-        (SELECT COUNT(*)   
-         FROM Production.Product   
-         WHERE Name LIKE 'Touring-3000%');  
-   SET @AvgWeight =   
-        (SELECT AVG(Weight)   
-         FROM Production.Product   
-         WHERE Name LIKE 'Touring-3000%');  
-   PRINT 'There are ' + CAST(@BikeCount AS VARCHAR(3)) + ' Touring-3000 bikes.'  
-   PRINT 'The average weight of the top 5 Touring-3000 bikes is ' + CAST(@AvgWeight AS VARCHAR(8)) + '.';  
-END  
-ELSE   
-BEGIN  
-SET @AvgWeight =   
-        (SELECT AVG(Weight)  
-         FROM Production.Product   
-         WHERE Name LIKE 'Touring-3000%' );  
-   PRINT 'Average weight of the Touring-3000 bikes is ' + CAST(@AvgWeight AS VARCHAR(8)) + '.' ;  
-END ;  
-GO  
+USE AdventureWorks2012;
+GO
+DECLARE @AvgWeight DECIMAL(8,2), @BikeCount INT
+IF
+(SELECT COUNT(*) FROM Production.Product WHERE Name LIKE 'Touring-3000%' ) > 5
+BEGIN
+   SET @BikeCount =
+        (SELECT COUNT(*)
+         FROM Production.Product
+         WHERE Name LIKE 'Touring-3000%');
+   SET @AvgWeight =
+        (SELECT AVG(Weight)
+         FROM Production.Product
+         WHERE Name LIKE 'Touring-3000%');
+   PRINT 'There are ' + CAST(@BikeCount AS VARCHAR(3)) + ' Touring-3000 bikes.'
+   PRINT 'The average weight of the top 5 Touring-3000 bikes is ' + CAST(@AvgWeight AS VARCHAR(8)) + '.';
+END
+ELSE
+BEGIN
+SET @AvgWeight =
+        (SELECT AVG(Weight)
+         FROM Production.Product
+         WHERE Name LIKE 'Touring-3000%' );
+   PRINT 'Average weight of the Touring-3000 bikes is ' + CAST(@AvgWeight AS VARCHAR(8)) + '.' ;
+END ;
+GO
 
 
 -- 示例四
-DECLARE @Number INT;  
-SET @Number = 50;  
-IF @Number > 100  
-   PRINT 'The number is large.';  
-ELSE   
-   BEGIN  
-      IF @Number < 10  
-      PRINT 'The number is small.';  
-   ELSE  
-      PRINT 'The number is medium.';  
-   END ;  
-GO  
+DECLARE @Number INT;
+SET @Number = 50;
+IF @Number > 100
+   PRINT 'The number is large.';
+ELSE
+   BEGIN
+      IF @Number < 10
+      PRINT 'The number is small.';
+   ELSE
+      PRINT 'The number is medium.';
+   END ;
+GO
 ```
 
-
-#### GOTO 
+#### GOTO
 
 将执行流更改到标签处。 跳过 GOTO 后面的 Transact-SQL 语句，并从标签位置继续处理。 GOTO 语句和标签可在过程、批处理或语句块中的任何位置使用。 GOTO 语句可嵌套使用。
 
 ```SQL
 -- 语法
-Define the label:   
-label:   
-Alter the execution:  
-GOTO label   
+Define the label:
+label:
+Alter the execution:
+GOTO label
 
 -- 示例
-DECLARE @Counter int;  
-SET @Counter = 1;  
-WHILE @Counter < 10  
-BEGIN   
-    SELECT @Counter  
-    SET @Counter = @Counter + 1  
-    IF @Counter = 4 GOTO Branch_One --Jumps to the first branch.  
-    IF @Counter = 5 GOTO Branch_Two  --This will never execute.  
-END  
-Branch_One:  
-    SELECT 'Jumping To Branch One.'  
-    GOTO Branch_Three; --This will prevent Branch_Two from executing.  
-Branch_Two:  
-    SELECT 'Jumping To Branch Two.'  
-Branch_Three:  
-    SELECT 'Jumping To Branch Three.';  
+DECLARE @Counter int;
+SET @Counter = 1;
+WHILE @Counter < 10
+BEGIN
+    SELECT @Counter
+    SET @Counter = @Counter + 1
+    IF @Counter = 4 GOTO Branch_One --Jumps to the first branch.
+    IF @Counter = 5 GOTO Branch_Two  --This will never execute.
+END
+Branch_One:
+    SELECT 'Jumping To Branch One.'
+    GOTO Branch_Three; --This will prevent Branch_Two from executing.
+Branch_Two:
+    SELECT 'Jumping To Branch Two.'
+Branch_Three:
+    SELECT 'Jumping To Branch Three.';
 ```
 
-
-
-#### RETURN 
-
+#### RETURN
 
 从查询或过程中无条件退出。 RETURN 的执行是即时且完全的，可在任何时候用于从过程、批处理或语句块中退出。 RETURN 之后的语句是不执行的。
 
 ```SQL
 -- 示例一
-CREATE PROCEDURE findjobs @nm sysname = NULL  
-AS   
-IF @nm IS NULL  
-    BEGIN  
-        PRINT 'You must give a user name'  
-        RETURN  
-    END  
-ELSE  
-    BEGIN  
-        SELECT o.name, o.id, o.uid  
-        FROM sysobjects o INNER JOIN master..syslogins l  
-            ON o.uid = l.sid  
-        WHERE l.name = @nm  
-    END;  
+CREATE PROCEDURE findjobs @nm sysname = NULL
+AS
+IF @nm IS NULL
+    BEGIN
+        PRINT 'You must give a user name'
+        RETURN
+    END
+ELSE
+    BEGIN
+        SELECT o.name, o.id, o.uid
+        FROM sysobjects o INNER JOIN master..syslogins l
+            ON o.uid = l.sid
+        WHERE l.name = @nm
+    END;
 
 -- 示例二
-USE AdventureWorks2012;  
-GO  
-CREATE PROCEDURE checkstate @param VARCHAR(11)  
-AS  
-IF (SELECT StateProvince FROM Person.vAdditionalContactInfo WHERE ContactID = @param) = 'WA'  
-    RETURN 1  
-ELSE  
-    RETURN 2;  
-GO  
+USE AdventureWorks2012;
+GO
+CREATE PROCEDURE checkstate @param VARCHAR(11)
+AS
+IF (SELECT StateProvince FROM Person.vAdditionalContactInfo WHERE ContactID = @param) = 'WA'
+    RETURN 1
+ELSE
+    RETURN 2;
+GO
 ```
 
-
-#### THROW 
-
+#### THROW
 
 引发异常，并将执行转移到 TRY...CATCH 构造的 CATCH 块。
 
-
-
-
 ```SQL
 -- 语法
-THROW [ { error_number | @local_variable },  
-        { message | @local_variable },  
-        { state | @local_variable } ]   
-[ ; ]  
+THROW [ { error_number | @local_variable },
+        { message | @local_variable },
+        { state | @local_variable } ]
+[ ; ]
 
 -- error_number : 表示异常的常量或变量 error_number 为 int，并且必须大于或等于50000且小于或等于2147483647
--- message : 描述异常的字符串或变量。 message 为 nvarchar(2048) 
--- State : 在 0 到 255 之间的常量或变量，指示与消息关联的状态。 state 为 tinyint 
+-- message : 描述异常的字符串或变量。 message 为 nvarchar(2048)
+-- State : 在 0 到 255 之间的常量或变量，指示与消息关联的状态。 state 为 tinyint
 
 
 -- 示例一
-THROW 51000, 'The record does not exist.', 1;  
+THROW 51000, 'The record does not exist.', 1;
 
 
 -- 示例二
-USE tempdb;  
-GO  
-CREATE TABLE dbo.TestRethrow  
-(    ID INT PRIMARY KEY  
-);  
-BEGIN TRY  
-    INSERT dbo.TestRethrow(ID) VALUES(1);  
---  Force error 2627, Violation of PRIMARY KEY constraint to be raised.  
-    INSERT dbo.TestRethrow(ID) VALUES(1);  
-END TRY  
-BEGIN CATCH  
-  
-    PRINT 'In catch block.';  
-    THROW;  
-END CATCH;  
+USE tempdb;
+GO
+CREATE TABLE dbo.TestRethrow
+(    ID INT PRIMARY KEY
+);
+BEGIN TRY
+    INSERT dbo.TestRethrow(ID) VALUES(1);
+--  Force error 2627, Violation of PRIMARY KEY constraint to be raised.
+    INSERT dbo.TestRethrow(ID) VALUES(1);
+END TRY
+BEGIN CATCH
+
+    PRINT 'In catch block.';
+    THROW;
+END CATCH;
 
 ```
-
-
 
 #### TRY...CATCH
 
-
 ```SQL
 -- 语法
-BEGIN TRY  
-     { sql_statement | statement_block }  
-END TRY  
-BEGIN CATCH  
-     [ { sql_statement | statement_block } ]  
-END CATCH  
+BEGIN TRY
+     { sql_statement | statement_block }
+END TRY
+BEGIN CATCH
+     [ { sql_statement | statement_block } ]
+END CATCH
 
 
 -- 示例
-BEGIN TRY  
-    -- Generate a divide-by-zero error.  
-    SELECT 1/0;  
-END TRY  
-BEGIN CATCH  
-    SELECT  
-        ERROR_NUMBER() AS ErrorNumber  
-        ,ERROR_SEVERITY() AS ErrorSeverity  
-        ,ERROR_STATE() AS ErrorState  
-        ,ERROR_PROCEDURE() AS ErrorProcedure  
-        ,ERROR_LINE() AS ErrorLine  
-        ,ERROR_MESSAGE() AS ErrorMessage;  
-END CATCH;  
+BEGIN TRY
+    -- Generate a divide-by-zero error.
+    SELECT 1/0;
+END TRY
+BEGIN CATCH
+    SELECT
+        ERROR_NUMBER() AS ErrorNumber
+        ,ERROR_SEVERITY() AS ErrorSeverity
+        ,ERROR_STATE() AS ErrorState
+        ,ERROR_PROCEDURE() AS ErrorProcedure
+        ,ERROR_LINE() AS ErrorLine
+        ,ERROR_MESSAGE() AS ErrorMessage;
+END CATCH;
 ```
 
-
-#### WHILE 
-
+#### WHILE
 
 设置重复执行 SQL 语句或语句块的条件。 只要指定的条件为真，就重复执行语句。 可以使用 BREAK 和 CONTINUE 关键字在循环内部控制 WHILE 循环中语句的执行。
 
-
-
 ```SQL
 -- 示例
-USE AdventureWorks2012;  
-GO  
-WHILE (SELECT AVG(ListPrice) FROM Production.Product) < $300  
-BEGIN  
-   UPDATE Production.Product  
-      SET ListPrice = ListPrice * 2  
-   SELECT MAX(ListPrice) FROM Production.Product  
-   IF (SELECT MAX(ListPrice) FROM Production.Product) > $500  
-      BREAK  
-   ELSE  
-      CONTINUE  
-END  
-PRINT 'Too much for the market to bear';  
+USE AdventureWorks2012;
+GO
+WHILE (SELECT AVG(ListPrice) FROM Production.Product) < $300
+BEGIN
+   UPDATE Production.Product
+      SET ListPrice = ListPrice * 2
+   SELECT MAX(ListPrice) FROM Production.Product
+   IF (SELECT MAX(ListPrice) FROM Production.Product) > $500
+      BREAK
+   ELSE
+      CONTINUE
+END
+PRINT 'Too much for the market to bear';
 
 -- 示例二
-WHILE ( SELECT AVG(ListPrice) FROM dbo.DimProduct) < $300  
-BEGIN  
-    UPDATE dbo.DimProduct  
-        SET ListPrice = ListPrice * 2;  
-    SELECT MAX ( ListPrice) FROM dbo.DimProduct  
-    IF ( SELECT MAX (ListPrice) FROM dbo.DimProduct) > $500  
-        BREAK;  
-END  
+WHILE ( SELECT AVG(ListPrice) FROM dbo.DimProduct) < $300
+BEGIN
+    UPDATE dbo.DimProduct
+        SET ListPrice = ListPrice * 2;
+    SELECT MAX ( ListPrice) FROM dbo.DimProduct
+    IF ( SELECT MAX (ListPrice) FROM dbo.DimProduct) > $500
+        BREAK;
+END
 ```
-
-
-
-
-
-
-
-
-
-
-
-

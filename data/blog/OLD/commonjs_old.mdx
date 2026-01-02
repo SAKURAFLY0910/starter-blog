@@ -1,73 +1,61 @@
 ---
 title: 'CommonJS规范'
 date: '2022-08-30 16:37'
-tags: ['ES6', 'Web','CommonJS']
+tags: ['ES6', 'Web', 'CommonJS']
 draft: false
 layout: PostLayout
 summary: 'CommonJS规范'
 ---
 
-
 文章内容来自于[阮一峰老师博客](https://javascript.ruanyifeng.com/nodejs/module.html#toc6),其他详情请拜读原文。
-
-
 
 #### 概述
 
-* 每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。
-* 如果想在多个文件分享变量，必须定义为global对象的属性。
+- 每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。
+- 如果想在多个文件分享变量，必须定义为global对象的属性。
   ```js
-  global.warning = true;
+  global.warning = true
   ```
-* 所有代码都运行在模块作用域，不会污染全局作用域。
-* 模块可以多次加载，但是只会在第一次加载时运行一次，然后运行结果就被缓存了，以后再加载，就直接读取缓存结果。要想让模块再次运行，必须清除缓存。
-* 模块加载的顺序，按照其在代码中出现的顺序。
-
-
+- 所有代码都运行在模块作用域，不会污染全局作用域。
+- 模块可以多次加载，但是只会在第一次加载时运行一次，然后运行结果就被缓存了，以后再加载，就直接读取缓存结果。要想让模块再次运行，必须清除缓存。
+- 模块加载的顺序，按照其在代码中出现的顺序。
 
 #### module对象
-
 
 　　如果在命令行下调用某个模块，比如node something.js，那么module.parent就是null。
 　　如果是在脚本之中调用，比如require('./something.js')，那么module.parent就是调用它的模块。利用这一点，可以判断当前模块是否为入口脚本。
 
-
-
 ```node
 if (!module.parent) {
-    // ran with `node something.js`
-    app.listen(8088, function() {
-        console.log('app listening on port 8088');
-    })
+  // ran with `node something.js`
+  app.listen(8088, function () {
+    console.log('app listening on port 8088')
+  })
 } else {
-    // used with `require('/.something.js')`
-    module.exports = app;
+  // used with `require('/.something.js')`
+  module.exports = app
 }
 ```
 
-
-
-
 每个模块内部，都有一个module对象，代表当前模块。它有以下属性。
-* module.id 模块的识别符，通常是带有绝对路径的模块文件名。
-* module.filename 模块的文件名，带有绝对路径。
-* module.loaded 返回一个布尔值，表示模块是否已经完成加载。
-* module.parent 返回一个对象，表示调用该模块的模块。
-* module.children 返回一个数组，表示该模块要用到的其他模块。
-* module.exports 表示模块对外输出的值。
 
+- module.id 模块的识别符，通常是带有绝对路径的模块文件名。
+- module.filename 模块的文件名，带有绝对路径。
+- module.loaded 返回一个布尔值，表示模块是否已经完成加载。
+- module.parent 返回一个对象，表示调用该模块的模块。
+- module.children 返回一个数组，表示该模块要用到的其他模块。
+- module.exports 表示模块对外输出的值。
 
 #### module.exports属性
-
 
 module.exports属性表示当前模块对外输出的接口，其他文件加载该模块，实际上就是读取module.exports变量。
 如果一个模块的对外接口，就是一个单一的值，不能使用exports输出，只能使用module.exports输出。
 
-
 #### require命令
 
 require命令用于加载文件，后缀名默认为.js。
-* 根据参数的不同格式，require命令去不同路径寻找模块文件。
+
+- 根据参数的不同格式，require命令去不同路径寻找模块文件。
   1. 如果参数字符串以“/”开头，则表示加载的是一个位于绝对路径的模块文件。比如，require('/home/marco/foo.js')将加载/home/marco/foo.js。
   2. 如果参数字符串以“./”开头，则表示加载的是一个位于相对路径（跟当前执行脚本的位置相比）的模块文件。比如，require('./circle')将加载当前脚本同一目录的circle.js。
   3. 如果参数字符串不以“./“或”/“开头，则表示加载的是一个默认提供的核心模块（位于Node的系统安装目录中），或者一个位于各级node_modules目录的已安装模块（全局安装或局部安装）。
@@ -75,36 +63,30 @@ require命令用于加载文件，后缀名默认为.js。
   5. 如果指定的模块文件没有发现，Node会尝试为文件名添加.js、.json、.node后，再去搜索。.js件会以文本格式的JavaScript脚本文件解析，.json文件会以JSON格式的文本文件解析，.node文件会以编译后的二进制文件解析。
   6. 如果想得到require命令加载的确切文件名，使用require.resolve()方法。
 
-
 #### 模块的缓存
-
 
 第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的module.exports属性。
 所有缓存的模块保存在require.cache之中，如果想删除模块的缓存，可以像下面这样写。
 
-
-
 ```node
 // 删除指定模块的缓存
-delete require.cache[moduleName];
+delete require.cache[moduleName]
 
 // 删除所有模块的缓存
-Object.keys(require.cache).forEach(function(key) {
-  delete require.cache[key];
+Object.keys(require.cache).forEach(function (key) {
+  delete require.cache[key]
 })
 ```
-
 
 #### 模块的加载机制
 
 CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
 
-
-
-
 #### CommonJS与ES6区别
-* CommonJS模块输出的是一个值的复制 ES6模块输出的是值的引用
-* CommonJS模块是运行时加载，ES6模块是编译时输出接口
+
+- CommonJS模块输出的是一个值的复制 ES6模块输出的是值的引用
+- CommonJS模块是运行时加载，ES6模块是编译时输出接口
+
 ```JS
 // CommonJS
 module.exports = {
@@ -119,7 +101,8 @@ exports.default = {
 
 
 exports.foo = 'hello'
-```  
+```
+
 ```JS
 // ES6
 export default {
@@ -129,6 +112,3 @@ export default {
 
 export let foo = 'heool'
 ```
-
-
-

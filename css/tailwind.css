@@ -3,6 +3,7 @@
 @plugin '@tailwindcss/typography';
 @source '../node_modules/pliny';
 @custom-variant dark (&:where(.dark, .dark *));
+@plugin "daisyui";
 
 /* Core theme configuration */
 @theme {

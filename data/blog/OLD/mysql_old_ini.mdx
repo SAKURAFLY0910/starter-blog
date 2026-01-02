@@ -7,16 +7,13 @@ layout: PostLayout
 summary: 'MySQL的binlog就是大家经常所说的Binary Log，即bin-log，是MySQL存储对数据库改动的二进制文件，也就是记录了所有DDL与DML（select除外）语句.  '
 ---
 
-#### [client]、[mysql]、[mysqld]组说明     
+#### [client]、[mysql]、[mysqld]组说明
 
+- [clent]:客户端 : 配置信息应用范围是所有的客户端，包括mysql、mysqladmin、mysqldump等
 
-* [clent]:客户端 : 配置信息应用范围是所有的客户端，包括mysql、mysqladmin、mysqldump等
+- [mysql]:mysql客户端 : 配置信息只对mysql客户端生效。当客户端使用的配置在被重复配置时，下面的配置优先(下面的会覆盖上面的原则)
 
-* [mysql]:mysql客户端 : 配置信息只对mysql客户端生效。当客户端使用的配置在被重复配置时，下面的配置优先(下面的会覆盖上面的原则)
-
-* [mysqld]:服务端 : 配置信息对服务端生效
-
-
+- [mysqld]:服务端 : 配置信息对服务端生效
 
 #### 配置信息
 
@@ -142,17 +139,3 @@ sync_relay_log=10000
 sync_relay_log_info=10000
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-

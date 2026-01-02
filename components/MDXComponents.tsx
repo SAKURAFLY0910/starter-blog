@@ -5,10 +5,14 @@ import type { MDXComponents } from 'mdx/types'
 import Image from './Image'
 import CustomLink from './Link'
 import TableWrapper from './TableWrapper'
+import VideoPlayer from '@/components/VideoPlayer'
+import ReactPlayer from '@/components/ReactPlayer'
 
 export const components: MDXComponents = {
   Image,
   TOCInline,
+  VideoPlayer,
+  ReactPlayer,
   a: CustomLink,
   pre: Pre,
   table: TableWrapper,

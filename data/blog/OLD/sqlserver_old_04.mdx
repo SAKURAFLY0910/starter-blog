@@ -11,209 +11,199 @@ summary: '日期时间的常用函数及处理'
 ### 返回系统日期和时间值的函数
 
 #### 精度较高的系统日期和时间函数
+
 ##### SYSDATETIME
 
+- 语法 : SYSDATETIME()
+- 返回值 : 返回包含计算机的日期和时间的 datetime2(7) 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
+- 返回值类型 : datetime2(7)
 
-* 语法 :  SYSDATETIME()
-* 返回值 : 返回包含计算机的日期和时间的 datetime2(7) 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
-* 返回值类型 : datetime2(7)
+##### SYSDATETIMEOFFSET
 
-##### SYSDATETIMEOFFSET 
+- 语法 : SYSDATETIMEOFFSET ()
+- 返回值 : 返回包含计算机的日期和时间的 datetimeoffset(7) 值，SQL Server 的实例在该计算机上运行。 返回值包括时区偏移量。
+- 返回值类型 : datetimeoffset(7)
 
+##### SYSUTCDATETIME
 
-* 语法 :  SYSDATETIMEOFFSET ()
-* 返回值 : 返回包含计算机的日期和时间的 datetimeoffset(7) 值，SQL Server 的实例在该计算机上运行。 返回值包括时区偏移量。
-* 返回值类型 : datetimeoffset(7)
-
-##### SYSUTCDATETIME 
-
-
-* 语法 :  SYSDATETIME()
-* 返回值 : 返回包含计算机的日期和时间的 datetime2(7) 值，SQL Server 的实例正在该计算机上运行。 该函数返回日期和时间作为 UTC 时间（协调世界时）。
-* 返回值类型 : datetime2(7)
-
-
+- 语法 : SYSDATETIME()
+- 返回值 : 返回包含计算机的日期和时间的 datetime2(7) 值，SQL Server 的实例正在该计算机上运行。 该函数返回日期和时间作为 UTC 时间（协调世界时）。
+- 返回值类型 : datetime2(7)
 
 #### 精度较高低系统日期和时间函数
+
 ##### CURRENT_TIMESTAMP
 
+- 语法 : CURRENT_TIMESTAMP
+- 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
+- 返回值数据类型 : datetime
 
-* 语法 : CURRENT_TIMESTAMP
-* 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
-* 返回值数据类型 : datetime
+##### GETDATE
 
+- 语法 : GETDATE()
+- 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
+- 返回值数据类型 : datetime
 
-##### GETDATE 
+##### GETUTCDATE
 
-
-* 语法 : GETDATE()
-* 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 返回值不包括时区偏移量。
-* 返回值数据类型 : datetime
-
-
-##### GETUTCDATE 
-
-
-* 语法 : GETUTCDATE()
-* 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 该函数返回日期和时间作为 UTC 时间（协调世界时）。
-* 返回值数据类型 : datetime
-
+- 语法 : GETUTCDATE()
+- 返回值 : 返回包含计算机的日期和时间的 datetime 值，SQL Server 的实例在该计算机上运行。 该函数返回日期和时间作为 UTC 时间（协调世界时）。
+- 返回值数据类型 : datetime
 
 #### 返回日期和时间部分的函数
-##### DATENAME : 返回表示指定 date 的指定 datepart 的字符串
 
+##### DATENAME : 返回表示指定 date 的指定 datepart 的字符串
 
 语法 : DATENAME ( datepart , date )  
 返回值类型: nvarchar
 
-
-<table aria-label="参数" class="table table-sm">
-<thead>
-<tr>
-<th><em>datepart</em></th>
-<th>缩写形式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>year</strong></td>
-<td><strong>yy, yyyy</strong></td>
-</tr>
-<tr>
-<td>quarter </td>
-<td><strong>qq, q</strong></td>
-</tr>
-<tr>
-<td>month </td>
-<td><strong>mm, m</strong></td>
-</tr>
-<tr>
-<td>dayofyear </td>
-<td><strong>dy, y</strong></td>
-</tr>
-<tr>
-<td>day </td>
-<td><strong>dd, d</strong></td>
-</tr>
-<tr>
-<td>week </td>
-<td><strong>wk, ww</strong></td>
-</tr>
-<tr>
-<td>weekday </td>
-<td><strong>dw, w</strong></td>
-</tr>
-<tr>
-<td>hour</td>
-<td><strong>hh</strong></td>
-</tr>
-<tr>
-<td>minute </td>
-<td><strong>mi, n</strong></td>
-</tr>
-<tr>
-<td>second </td>
-<td><strong>ss, s</strong></td>
-</tr>
-<tr>
-<td>millisecond </td>
-<td>ms </td>
-</tr>
-<tr>
-<td>microsecond </td>
-<td>mcs </td>
-</tr>
-<tr>
-<td>nanosecond </td>
-<td>ns </td>
-</tr>
-<tr>
-<td><strong>TZoffset</strong></td>
-<td><strong>tz</strong></td>
-</tr>
-<tr>
-<td><strong>ISO_WEEK</strong></td>
-<td><strong>ISOWK, ISOWW</strong></td>
-</tr>
-</tbody>
+<table aria-label="参数" class="table-sm table">
+  <thead>
+    <tr>
+      <th>
+        <em>datepart</em>
+      </th>
+      <th>缩写形式</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <strong>year</strong>
+      </td>
+      <td>
+        <strong>yy, yyyy</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>quarter </td>
+      <td>
+        <strong>qq, q</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>month </td>
+      <td>
+        <strong>mm, m</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>dayofyear </td>
+      <td>
+        <strong>dy, y</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>day </td>
+      <td>
+        <strong>dd, d</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>week </td>
+      <td>
+        <strong>wk, ww</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>weekday </td>
+      <td>
+        <strong>dw, w</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>hour</td>
+      <td>
+        <strong>hh</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>minute </td>
+      <td>
+        <strong>mi, n</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>second </td>
+      <td>
+        <strong>ss, s</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>millisecond </td>
+      <td>ms </td>
+    </tr>
+    <tr>
+      <td>microsecond </td>
+      <td>mcs </td>
+    </tr>
+    <tr>
+      <td>nanosecond </td>
+      <td>ns </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>TZoffset</strong>
+      </td>
+      <td>
+        <strong>tz</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>ISO_WEEK</strong>
+      </td>
+      <td>
+        <strong>ISOWK, ISOWW</strong>
+      </td>
+    </tr>
+  </tbody>
 </table>
-
 
 ##### DATEPART : 返回表示指定 date 的指定 datepart 的整数
 
-
-
 语法 : DATEPART ( datepart , date )
-返回值类型 : int 
-
+返回值类型 : int
 
 ##### DAY : 返回表示指定 date 的“日”部分的整数
-
 
 语法 : DAY ( date )
 返回值类型 : int
 
-
-##### MONTH  : 返回表示指定 date 的“月”部分的整数
-
+##### MONTH : 返回表示指定 date 的“月”部分的整数
 
 语法 : MONTH ( date )
 返回值类型 : int
 
+##### YEAR : 返回表示指定 date 的“年”部分的整数
 
-
-##### YEAR  : 返回表示指定 date 的“年”部分的整数
-
-
-语法 : YEAR  ( date )
+语法 : YEAR ( date )
 返回值类型 : int
-
 
 #### 从相应部分返回日期和时间值的函数
 
 ##### DATEFROMPARTS : 此函数返回映射到指定年、月、日值的 date 值
 
-
 此函数可在 SQL Server 2012 (11.x) 及更高版本的服务器上执行远程处理。 它不能无法在版本低于 SQL Server 2012 (11.x) 的服务器上执行远程处理。
 
-
-
-* 语法 : DATEFROMPARTS ( year, month, day )  
-* 返回值类型 :  date  
-
+- 语法 : DATEFROMPARTS ( year, month, day )
+- 返回值类型 : date
 
 ##### DATETIME2FROMPARTS : 对指定日期和时间参数返回 datetime2 值
 
-
 此函数可以在 SQL Server 2012 (11.x) 服务器以及更高版本上远程执行。 但在 SQL Server 2012 (11.x) 之下的服务器版本中无法远程执行。
 
-
-
 语法 : DATETIME2FROMPARTS ( year, month, day, hour, minute, seconds, fractions, precision )  
-返回值类型 : datetime2 
-
+返回值类型 : datetime2
 
 ##### DATETIMEFROMPARTS : 对指定日期和时间参数返回 datetime 值
 
-
 此函数可以在 SQL Server 2012 (11.x) 服务器以及更高版本上远程执行。 但在 SQL Server 2012 (11.x) 之下的服务器版本中无法远程执行。
-
-
-
 
 语法 : DATETIMEFROMPARTS ( year, month, day, hour, minute, seconds, milliseconds )  
 返回值类型 : datetime
 
-
 ##### TIMEFROMPARTS : 对指定的时间返回 time 值
 
-
 语法 : TIMEFROMPARTS ( hour, minute, seconds, fractions, precision )  
-返回值类型 : time 
-
-
-
-
-
-
-
+返回值类型 : time

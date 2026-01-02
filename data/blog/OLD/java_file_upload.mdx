@@ -8,11 +8,13 @@ summary: 'Java文件上传基本操作'
 ---
 
 > 最近在学习文件上传部署的一些操作,以此记录做备忘之用.
-一共两种方式:
-1> 标准上传方式,可通过form表单action属性请求或者ajax方式进行请求,返回服务器上的存储路径.
-2> 在前端将文件转换为Base64,然后将文件名和Base64字符串后端,经过解析之后,以输出流的方式写入到指定文件路径之中.
-项目绝对路径基本可通过servletContext和类加载器.getPath的方式得到,不做赘述.
+> 一共两种方式:
+> 1> 标准上传方式,可通过form表单action属性请求或者ajax方式进行请求,返回服务器上的存储路径.
+> 2> 在前端将文件转换为Base64,然后将文件名和Base64字符串后端,经过解析之后,以输出流的方式写入到指定文件路径之中.
+> 项目绝对路径基本可通过servletContext和类加载器.getPath的方式得到,不做赘述.
+
 ## 获取项目绝对路径:
+
 ```java
 //类加载器方式
 ClassLoader classLoader = this.getClass().getClassLoader();
@@ -40,7 +42,9 @@ String realPath = servletContext.getRealPath("");
       <version>2.5<ersion>
     </dependency>
 ```
+
 ## 两种文件上传方式:
+
 ```java
 
 import com.alibaba.fastjson.JSON;
@@ -154,7 +158,7 @@ public class UploadFileService {
     }
 
      /**
-     * Base64方式存储文件 此法不通 需配置tomcat文件 同时Base64解码会出错,待研 
+     * Base64方式存储文件 此法不通 需配置tomcat文件 同时Base64解码会出错,待研
      * 究,不可用!
      * @param name
      * @param base64String
@@ -163,7 +167,7 @@ public class UploadFileService {
      * @param response
      * @return
      */
-public ServerResponse loadFileBase64(String name, String base64String, 
+public ServerResponse loadFileBase64(String name, String base64String,
   HttpSession session, HttpServletRequest request,
   HttpServletResponse response) {
         ServerResponse res=null;

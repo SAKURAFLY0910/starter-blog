@@ -9,16 +9,16 @@ summary: 'MySQL的binlog就是大家经常所说的Binary Log，即bin-log，是
 
 <TOCInline toc={props.toc} />
 
-## 初识binlog  
+## 初识binlog
 
-MySQL的binlog就是大家经常所说的Binary Log，即bin-log，是MySQL存储对数据库改动的二进制文件，也就是记录了所有DDL与DML（select除外）语句.  
+MySQL的binlog就是大家经常所说的Binary Log，即bin-log，是MySQL存储对数据库改动的二进制文件，也就是记录了所有DDL与DML（select除外）语句.
 
 首先查看 **mysqlbinlog** 是否已经打开:
 
 ```mysql
 -- 查看MySQL的日志是否打开(log_bin项)
 
-mysql> SHOW VARIABLES LIKE 'log_bin%';     
+mysql> SHOW VARIABLES LIKE 'log_bin%';
 +---------------------------------+-------+
 | Variable_name                   | Value |
 +---------------------------------+-------+
@@ -28,7 +28,7 @@ mysql> SHOW VARIABLES LIKE 'log_bin%';
 2 rows in set (0.01 sec)
 
 -- 查看日志过期时间(过期之后日志会自动删除)
-  
+
 mysql> show variables like '%expire_logs_days%';
 +------------------+-------+
 | Variable_name    | Value |
@@ -36,24 +36,27 @@ mysql> show variables like '%expire_logs_days%';
 | expire_logs_days | 0     |
 +------------------+-------+
 1 row in set (0.00 sec)
-```     
+```
 
 如果 **log_bin** 是关闭状态的话,我们需要修改mysql配置文件.比如我的mysql安装位置是:D:\mysql\bin\mysql.exe. 所以修改D:\mysql\my.ini 文件,添加以下配置:
+
 ```mysql
 # 如果 log_bin=mysql-bin  则日志文件会默认存放在 C:\ProgramData\MySQL\MySQL Server 5.5\data\
 log-bin=D:/mysql/data/mysql-bin
-binlog_format=mixed 
+binlog_format=mixed
 # 设置日志永不过期(一般设置为10 即十天之后过期删除)
 expire_logs_days = 0
-```     
+```
 
-修改之后执行 **services.msc** 打开服务,重启mysql服务生效.   
-***
+修改之后执行 **services.msc** 打开服务,重启mysql服务生效.
+
+---
+
 ## 数据恢复测试
 
-1.准备表**person**,插入基本数据:  
+1.准备表**person**,插入基本数据:
 
-```mysql 
+```mysql
 mysql> CREATE TABLE `person`  (
     ->   `id` varchar(255) ,
     ->   `name` varchar(255) ,
@@ -73,19 +76,18 @@ mysql> select * from person;
 | bcaae031-6499-11ec-86bc-8c16453d981b | 王五 |   30 |
 +--------------------------------------+------+------+
 2 rows in set (0.00 sec)
-```     
+```
 
-2.模拟误删除**person**表:  
+2.模拟误删除**person**表:
 
 ```mysql
 mysql> delete from person;
 Query OK, 2 rows affected (0.00 sec)
-```   
+```
 
 3.尝试恢复表数据:
 
-
-* 查看当前日志名称:
+- 查看当前日志名称:
 
 ```mysql
 mysql> show master status;
@@ -95,9 +97,9 @@ mysql> show master status;
 | mysql-bin.000001 |     1856 |              |                  |
 +------------------+----------+--------------+------------------+
 1 row in set (0.00 sec)
-```     
+```
 
-* 查看当前日志节点:  
+- 查看当前日志节点:
 
 ```mysql
 mysql> show binlog events in 'mysql-bin.000001';
@@ -141,61 +143,44 @@ delete from person                                                              
 | mysql-bin.000001 | 1829 | Xid         |         1 |        1856 | COMMIT /* xid=152 */                                                                                                                                                                                |
 +------------------+------+-------------+-----------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 23 rows in set (0.00 sec)
-```  
+```
 
-可以看待在**1680**节点开始到**1856**节点结束是处理最后的删除表操作.所以我们恢复数据的时候,只需要恢复数据到**1680节点之前就行**   
-   
+可以看待在**1680**节点开始到**1856**节点结束是处理最后的删除表操作.所以我们恢复数据的时候,只需要恢复数据到**1680节点之前就行**
 
-* 通过binlog恢复数据   
+- 通过binlog恢复数据
 
-    * 打开命令窗,切换路径到与安装的mysql执行文件同目录。比如我的mysql安装路径是:D:\mysql\bin\mysql.exe，所以目录切换到**D:\mysql\bin\** 。      
+  - 打开命令窗,切换路径到与安装的mysql执行文件同目录。比如我的mysql安装路径是:D:\mysql\bin\mysql.exe，所以目录切换到\*\*D:\mysql\bin\*\* 。
 
-    * 一般有两种恢复操作：一种是将从日志文件中抽取到的sql存为件，然后执行.sql文件;另一种是直接将抽取到的sql执行.
+  - 一般有两种恢复操作：一种是将从日志文件中抽取到的sql存为件，然后执行.sql文件;另一种是直接将抽取到的sql执行.
 
 恢复命令格式如下：
-```mysql 
+
+```mysql
 # 抽取sql存为文件
-mysqlbinlog --start-position=开始节点号 --stop-posion=结束节点号  日志文件名称(保险起见使用使用绝对路径) > 存储位置名称  
-  
+mysqlbinlog --start-position=开始节点号 --stop-posion=结束节点号  日志文件名称(保险起见使用使用绝对路径) > 存储位置名称
+
 # 执行.sql文件
 source 路径名称.sql
 
-# 直接执行抽取到的sql  
-mysqlbinlog --start-position=开始节点号 --stop-posion=结束节点号  日志文件名称(保险起见使用使用绝对路径) | mysql -uroot -p123456 
-```  
+# 直接执行抽取到的sql
+mysqlbinlog --start-position=开始节点号 --stop-posion=结束节点号  日志文件名称(保险起见使用使用绝对路径) | mysql -uroot -p123456
+```
 
 通过**3.1**的分析,可以得知需要执行的起始节点位置和日志路径.所以执行命令如下:
+
 ```mysql
 # 第一种情况: 先存.sql 然后执行(两条命令分开执行)
 mysqlbinlog --start-position=4 --stop-position=1680 D:\mysql\data\mysql-bin.000001  > d:\\test1.sql
 
-source d://test1.sql  
+source d://test1.sql
 
-  
+
 # 第二种情况: 直接执行
 mysqlbinlog --start-position=4 --stop-position=1680 D:\mysql\data\mysql-bin.000001 | mysql -uroot -p1216
 ```
 
-
-
-
 执行完毕之后可以看到,数据已经恢复到以前两条数据没有删除的状态.
 
-
-
-
-
- 
-
-
-
-
- 
-
-
 　　
-
-
-
 
 　　

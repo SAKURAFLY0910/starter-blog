@@ -9,185 +9,301 @@ summary: '字符串函数是处理文本数据的核心工具，用于截取、�
 
 <TOCInline toc={props.toc} />
 
-#### CAST 
+#### CAST
 
-语法 : CAST ( expression AS data_type [ ( length ) ] )  
+语法 : CAST ( expression AS data_type [ ( length ) ] )
 
 ```SQL
-USE AdventureWorks2012;  
-GO  
-SELECT SUBSTRING(Name, 1, 30) AS ProductName, ListPrice  
-FROM Production.Product  
-WHERE CAST(ListPrice AS int) LIKE '33%';  
-GO  
+USE AdventureWorks2012;
+GO
+SELECT SUBSTRING(Name, 1, 30) AS ProductName, ListPrice
+FROM Production.Product
+WHERE CAST(ListPrice AS int) LIKE '33%';
+GO
 ```
-
-
-
-
 
 #### CONVERT
 
-语法 : CONVERT ( data_type [ ( length ) ] , expression [ , style ] )  
-
-
+语法 : CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
 
 ```SQL
-USE AdventureWorks2012;  
-GO  
-SELECT SUBSTRING(Name, 1, 30) AS ProductName, ListPrice  
-FROM Production.Product  
-WHERE CONVERT(int, ListPrice) LIKE '33%';  
+USE AdventureWorks2012;
+GO
+SELECT SUBSTRING(Name, 1, 30) AS ProductName, ListPrice
+FROM Production.Product
+WHERE CONVERT(int, ListPrice) LIKE '33%';
 ```
 
-<table aria-label="日期和时间样式" class="table table-sm">
-<thead>
-<tr>
-<th>不带世纪数位 (yy) (<sup>1</sup>)</th>
-<th>带世纪数位 (yyyy)</th>
-<th>Standard</th>
-<th>输入/输出 (<sup>3</sup>)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>-</td>
-<td>0 或 100 (<sup>1,</sup><sup>2</sup>) </td>
-<td>datetime 和 smalldatetime 的默认值</td>
-<td>mon dd yyyy hh:miAM（或 PM）</td>
-</tr>
-<tr>
-<td><strong>1</strong></td>
-<td><strong>101</strong></td>
-<td>美国</td>
-<td>1 = mm/dd/yy<br/> 101 = mm/dd/yyyy</td>
-</tr>
-<tr>
-<td><strong>2</strong></td>
-<td><strong>102</strong></td>
-<td>ANSI</td>
-<td>2 = yy.mm.dd<br/> 102 = yyyy.mm.dd</td>
-</tr>
-<tr>
-<td><strong>3</strong></td>
-<td><strong>103</strong></td>
-<td>英国/法国</td>
-<td>3 = dd/mm/yy<br/> 103 = dd/mm/yyyy</td>
-</tr>
-<tr>
-<td><strong>4</strong></td>
-<td><strong>104</strong></td>
-<td>德语</td>
-<td>4 = dd.mm.yy<br/> 104 = dd.mm.yyyy</td>
-</tr>
-<tr>
-<td><strong>5</strong></td>
-<td><strong>105</strong></td>
-<td>意大利语</td>
-<td>5 = dd-mm-yy<br/> 105 = dd-mm-yyyy</td>
-</tr>
-<tr>
-<td><strong>6</strong></td>
-<td><strong>106</strong><sup>(1)</sup></td>
-<td>-</td>
-<td>6 = dd mon yy<br/> 106 = dd mon yyyy</td>
-</tr>
-<tr>
-<td><strong>7</strong></td>
-<td><strong>107</strong><sup>(1)</sup></td>
-<td>-</td>
-<td>7 = Mon dd, yy<br/> 107 = Mon dd, yyyy</td>
-</tr>
-<tr>
-<td>8 或 24 </td>
-<td><strong>108</strong></td>
-<td>-</td>
-<td>hh:mi:ss</td>
-</tr>
-<tr>
-<td>-</td>
-<td>9 或 109 (<sup>1,</sup><sup>2</sup>) </td>
-<td>默认格式 + 毫秒</td>
-<td>mon dd yyyy hh:mi:ss:mmmAM（或 PM）</td>
-</tr>
-<tr>
-<td><strong>10</strong></td>
-<td><strong>110</strong></td>
-<td>USA</td>
-<td>10 = mm-dd-yy<br/> 110 = mm-dd-yyyy</td>
-</tr>
-<tr>
-<td><strong>11</strong></td>
-<td><strong>111</strong></td>
-<td>日本</td>
-<td>11 = yy/mm/dd<br/> 111 = yyyy/mm/dd</td>
-</tr>
-<tr>
-<td><strong>12</strong></td>
-<td><strong>112</strong></td>
-<td>ISO</td>
-<td>12 = yymmdd<br/> 112 = yyyymmdd</td>
-</tr>
-<tr>
-<td>-</td>
-<td>13 或 113 (<sup>1,</sup><sup>2</sup>) </td>
-<td>欧洲默认格式 + 毫秒</td>
-<td>dd mon yyyy hh:mi:ss:mmm（24 小时制）</td>
-</tr>
-<tr>
-<td><strong>14</strong></td>
-<td><strong>114</strong></td>
-<td>-</td>
-<td>hh:mi:ss:mmm（24 小时制）</td>
-</tr>
-<tr>
-<td>-</td>
-<td>20 或 120 (<sup>2</sup>) </td>
-<td>ODBC 规范</td>
-<td>yyyy-mm-dd hh:mi:ss（24 小时制）</td>
-</tr>
-<tr>
-<td>-</td>
-<td>21、25 或 121   (<sup>2</sup>)</td>
-<td>time、date、datetime2 和 datetimeoffset 的 ODBC 规范（带毫秒）默认值</td>
-<td>yyyy-mm-dd hh:mi:ss.mmm（24 小时制）</td>
-</tr>
-<tr>
-<td>22 </td>
-<td>-</td>
-<td>美国</td>
-<td>mm/dd/yy hh:mi:ss AM（或 PM）</td>
-</tr>
-<tr>
-<td>-</td>
-<td>23 </td>
-<td>ISO8601</td>
-<td>yyyy-mm-dd</td>
-</tr>
-<tr>
-<td>-</td>
-<td><strong>126</strong> (<sup>4</sup>)</td>
-<td>ISO8601</td>
-<td>yyyy-mm-ddThh:mi:ss.mmm（无空格）<br/><br/> <strong>注意：</strong> 毫秒 (mmm) 值为 0 时，不会显示毫秒小数部分的值。 例如，值“2012-11-07T18:26:20.000”显示为“2012-11-07T18:26:20”。</td>
-</tr>
-<tr>
-<td>-</td>
-<td><strong>127</strong>(<sup>6, 7</sup>)</td>
-<td>带时区 Z 的 ISO8601。</td>
-<td>yyyy-MM-ddThh:mm:ss.fffZ（不带空格）<br/><br/> <strong>注意：</strong> 毫秒 (mmm) 值为 0 时，不会显示毫秒小数值。 例如，值“2012-11-07T18:26:20.000”显示为“2012-11-07T18:26:20”。</td>
-</tr>
-<tr>
-<td>-</td>
-<td><strong>130</strong> (<sup>1,</sup><sup>2</sup>)</td>
-<td>回历 (<sup>5</sup>)</td>
-<td>dd mon yyyy hh:mi:ss:mmmAM<br/><br/> 在此样式中，mon 表示完整月份名称的多标记回历 unicode 表示形式。 该值在 SSMS 的默认 US 安装中不会正确呈现。</td>
-</tr>
-<tr>
-<td>-</td>
-<td><strong>131</strong> (<sup>2</sup>)</td>
-<td>回历 (<sup>5</sup>)</td>
-<td>dd/mm/yyyy hh:mi:ss:mmmAM</td>
-</tr>
-</tbody>
+<table aria-label="日期和时间样式" class="table-sm table">
+  <thead>
+    <tr>
+      <th>
+        不带世纪数位 (yy) (<sup>1</sup>)
+      </th>
+      <th>带世纪数位 (yyyy)</th>
+      <th>Standard</th>
+      <th>
+        输入/输出 (<sup>3</sup>)
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>
+        0 或 100 (<sup>1,</sup>
+        <sup>2</sup>){' '}
+      </td>
+      <td>datetime 和 smalldatetime 的默认值</td>
+      <td>mon dd yyyy hh:miAM（或 PM）</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>1</strong>
+      </td>
+      <td>
+        <strong>101</strong>
+      </td>
+      <td>美国</td>
+      <td>
+        1 = mm/dd/yy
+        <br /> 101 = mm/dd/yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>2</strong>
+      </td>
+      <td>
+        <strong>102</strong>
+      </td>
+      <td>ANSI</td>
+      <td>
+        2 = yy.mm.dd
+        <br /> 102 = yyyy.mm.dd
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>3</strong>
+      </td>
+      <td>
+        <strong>103</strong>
+      </td>
+      <td>英国/法国</td>
+      <td>
+        3 = dd/mm/yy
+        <br /> 103 = dd/mm/yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>4</strong>
+      </td>
+      <td>
+        <strong>104</strong>
+      </td>
+      <td>德语</td>
+      <td>
+        4 = dd.mm.yy
+        <br /> 104 = dd.mm.yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>5</strong>
+      </td>
+      <td>
+        <strong>105</strong>
+      </td>
+      <td>意大利语</td>
+      <td>
+        5 = dd-mm-yy
+        <br /> 105 = dd-mm-yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>6</strong>
+      </td>
+      <td>
+        <strong>106</strong>
+        <sup>(1)</sup>
+      </td>
+      <td>-</td>
+      <td>
+        6 = dd mon yy
+        <br /> 106 = dd mon yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>7</strong>
+      </td>
+      <td>
+        <strong>107</strong>
+        <sup>(1)</sup>
+      </td>
+      <td>-</td>
+      <td>
+        7 = Mon dd, yy
+        <br /> 107 = Mon dd, yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>8 或 24 </td>
+      <td>
+        <strong>108</strong>
+      </td>
+      <td>-</td>
+      <td>hh:mi:ss</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        9 或 109 (<sup>1,</sup>
+        <sup>2</sup>){' '}
+      </td>
+      <td>默认格式 + 毫秒</td>
+      <td>mon dd yyyy hh:mi:ss:mmmAM（或 PM）</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>10</strong>
+      </td>
+      <td>
+        <strong>110</strong>
+      </td>
+      <td>USA</td>
+      <td>
+        10 = mm-dd-yy
+        <br /> 110 = mm-dd-yyyy
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>11</strong>
+      </td>
+      <td>
+        <strong>111</strong>
+      </td>
+      <td>日本</td>
+      <td>
+        11 = yy/mm/dd
+        <br /> 111 = yyyy/mm/dd
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>12</strong>
+      </td>
+      <td>
+        <strong>112</strong>
+      </td>
+      <td>ISO</td>
+      <td>
+        12 = yymmdd
+        <br /> 112 = yyyymmdd
+      </td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        13 或 113 (<sup>1,</sup>
+        <sup>2</sup>){' '}
+      </td>
+      <td>欧洲默认格式 + 毫秒</td>
+      <td>dd mon yyyy hh:mi:ss:mmm（24 小时制）</td>
+    </tr>
+    <tr>
+      <td>
+        <strong>14</strong>
+      </td>
+      <td>
+        <strong>114</strong>
+      </td>
+      <td>-</td>
+      <td>hh:mi:ss:mmm（24 小时制）</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        20 或 120 (<sup>2</sup>){' '}
+      </td>
+      <td>ODBC 规范</td>
+      <td>yyyy-mm-dd hh:mi:ss（24 小时制）</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        21、25 或 121 (<sup>2</sup>)
+      </td>
+      <td>time、date、datetime2 和 datetimeoffset 的 ODBC 规范（带毫秒）默认值</td>
+      <td>yyyy-mm-dd hh:mi:ss.mmm（24 小时制）</td>
+    </tr>
+    <tr>
+      <td>22 </td>
+      <td>-</td>
+      <td>美国</td>
+      <td>mm/dd/yy hh:mi:ss AM（或 PM）</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>23 </td>
+      <td>ISO8601</td>
+      <td>yyyy-mm-dd</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        <strong>126</strong> (<sup>4</sup>)
+      </td>
+      <td>ISO8601</td>
+      <td>
+        yyyy-mm-ddThh:mi:ss.mmm（无空格）
+        <br />
+        <br /> <strong>注意：</strong> 毫秒 (mmm) 值为 0 时，不会显示毫秒小数部分的值。
+        例如，值“2012-11-07T18:26:20.000”显示为“2012-11-07T18:26:20”。
+      </td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        <strong>127</strong>(<sup>6, 7</sup>)
+      </td>
+      <td>带时区 Z 的 ISO8601。</td>
+      <td>
+        yyyy-MM-ddThh:mm:ss.fffZ（不带空格）
+        <br />
+        <br /> <strong>注意：</strong> 毫秒 (mmm) 值为 0 时，不会显示毫秒小数值。
+        例如，值“2012-11-07T18:26:20.000”显示为“2012-11-07T18:26:20”。
+      </td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        <strong>130</strong> (<sup>1,</sup>
+        <sup>2</sup>)
+      </td>
+      <td>
+        回历 (<sup>5</sup>)
+      </td>
+      <td>
+        dd mon yyyy hh:mi:ss:mmmAM
+        <br />
+        <br /> 在此样式中，mon 表示完整月份名称的多标记回历 unicode 表示形式。 该值在 SSMS 的默认 US
+        安装中不会正确呈现。
+      </td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>
+        <strong>131</strong> (<sup>2</sup>)
+      </td>
+      <td>
+        回历 (<sup>5</sup>)
+      </td>
+      <td>dd/mm/yyyy hh:mi:ss:mmmAM</td>
+    </tr>
+  </tbody>
 </table>
-

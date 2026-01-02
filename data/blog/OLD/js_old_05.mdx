@@ -1,35 +1,29 @@
 ---
 title: 'NodeJS常用命令'
 date: '2022-06-27 11:39'
-tags: ['JavaScript', 'Web','Node.js', 'npm']
+tags: ['JavaScript', 'Web', 'Node.js', 'npm']
 draft: false
 layout: PostLayout
 summary: 'Node.js常用命令'
 ---
 
-
 ##### 清除缓存
-
 
 ```node
 npm cache clean --force
 ```
 
-
 ##### cnpm淘宝镜像安装
 
 ```node
-npm install -g cnpm --registry=https://registry.npm.taobao.org 
+npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
-
-
 
 ##### proxy代理访问
 
 ```node
-npm config set registry https://registry.npm.taobao.org 
+npm config set registry https://registry.npm.taobao.org
 ```
-
 
 ##### 安装模块
 
@@ -48,9 +42,7 @@ npm install express --save
 npm install express -S
 ```
 
-
 ##### 版本管理工具nvm
-
 
 如果想在同一台机器，同时安装多个版本的node.js，就需要用到版本管理工具nvm。
 
@@ -76,5 +68,3 @@ $ nvm ls-remote
 # 退出已经激活的nvm，使用deactivate命令。
 $ nvm deactivate
 ```
-
-

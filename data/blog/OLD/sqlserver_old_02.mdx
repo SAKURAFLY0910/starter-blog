@@ -9,20 +9,22 @@ summary: 'FROW_NUMBER() OVER (PARTITION BY Column ORDER BY COLUMN) 分组聚合�
 
 <TOCInline toc={props.toc} />
 
-
 分组聚合函数可以对数据分组并排序以按分组增加一个自动递增的列以得到理想的数据。
-> SQLServer版本至少2005版  
+
+> SQLServer版本至少2005版
 
 ##### 语法:
+
 ```sql
 ROW_NUMBER() OVER (PARTITION BY Column1 ORDER BY COLUMN2)
-```  
+```
 
-* Column1: 分组列
-* Column2：排序列
+- Column1: 分组列
+- Column2：排序列
 
 ##### 演示：
-1.创建如下表Table_1结构并插入数据： 
+
+1.创建如下表Table_1结构并插入数据：
 
 |                  id                  | kysl1 | kysl2 |
 | :----------------------------------: | :---: | :---: |
@@ -35,28 +37,23 @@ ROW_NUMBER() OVER (PARTITION BY Column1 ORDER BY COLUMN2)
 | 7EE903A5-2CF9-4BB5-8B66-33E6AEFEF3FD |  aa   |   3   |
 | 0AF9501D-C4A9-4CC0-B753-CABDDB90B783 |  cc   |   5   |
 | 822DAA22-786C-4B67-827E-A5BB10B60845 |  bb   |   4   |
- 
+
 2.执行SQL：
+
 ```SQL
-select *,ROW_NUMBER() OVER (PARTITION BY kysl ORDER BY KYSL2 )ws from [Table_1] 
-```  
+select *,ROW_NUMBER() OVER (PARTITION BY kysl ORDER BY KYSL2 )ws from [Table_1]
+```
 
 结果如下：
 
-|                  id                  | kysl1 | kysl2 |  n   |
-| :----------------------------------: | :---: | :---: | :--: |
-| 2D0357A3-8CCF-442A-B0C1-35DFE2A881CB |  aa   |   1   |  1   |
-| BD9C0338-8933-4423-81DB-A0AEE05D03F0 |  aa   |   2   |  2   |
-| 7EE903A5-2CF9-4BB5-8B66-33E6AEFEF3FD |  aa   |   3   |  3   |
-| 314C03C5-D79C-4EA0-82CD-25337935E0A0 |  bb   |   2   |  1   |
-| 822DAA22-786C-4B67-827E-A5BB10B60845 |  bb   |   4   |  2   |
-| 16088343-FB69-4917-9677-DAEA3ABB8A09 |  bb   |   5   |  3   |
-| AB022164-0C61-4321-8E36-3A5A3E35EA4E |  cc   |   3   |  1   |
-| 40718F52-F815-4C61-968E-2BAEE248CA81 |  cc   |   4   |  2   |
-| 0AF9501D-C4A9-4CC0-B753-CABDDB90B783 |  cc   |   5   |  3   |
-  
-
-
-
-
-
+|                  id                  | kysl1 | kysl2 |  n  |
+| :----------------------------------: | :---: | :---: | :-: |
+| 2D0357A3-8CCF-442A-B0C1-35DFE2A881CB |  aa   |   1   |  1  |
+| BD9C0338-8933-4423-81DB-A0AEE05D03F0 |  aa   |   2   |  2  |
+| 7EE903A5-2CF9-4BB5-8B66-33E6AEFEF3FD |  aa   |   3   |  3  |
+| 314C03C5-D79C-4EA0-82CD-25337935E0A0 |  bb   |   2   |  1  |
+| 822DAA22-786C-4B67-827E-A5BB10B60845 |  bb   |   4   |  2  |
+| 16088343-FB69-4917-9677-DAEA3ABB8A09 |  bb   |   5   |  3  |
+| AB022164-0C61-4321-8E36-3A5A3E35EA4E |  cc   |   3   |  1  |
+| 40718F52-F815-4C61-968E-2BAEE248CA81 |  cc   |   4   |  2  |
+| 0AF9501D-C4A9-4CC0-B753-CABDDB90B783 |  cc   |   5   |  3  |

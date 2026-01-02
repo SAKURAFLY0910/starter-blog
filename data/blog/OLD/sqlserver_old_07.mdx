@@ -10,9 +10,10 @@ summary: '其他函数(JSON函数、逻辑函数、聚合函数、排名函数�
 <TOCInline toc={props.toc} />
 
 ### JSON函数相关(SQLServer16及以上)
-* 用途：处理JSON格式数据（解析、生成、查询）
-* 常用函数：JSON_VALUE()（提取值）、JSON_QUERY()（提取对象/数组）、JSON_MODIFY()（修改JSON）、ISJSON()（验证JSON）
-* 场景：API数据交互、NoSQL数据存储
+
+- 用途：处理JSON格式数据（解析、生成、查询）
+- 常用函数：JSON_VALUE()（提取值）、JSON_QUERY()（提取对象/数组）、JSON_MODIFY()（修改JSON）、ISJSON()（验证JSON）
+- 场景：API数据交互、NoSQL数据存储
 
 #### ISJSON ：测试字符串是否包含有效JSON
 
@@ -28,14 +29,9 @@ select json_value('{"a":1,"b":2,"c":{"cc":3}}','$.b'); -- 2
 select json_value('{"a":1,"b":2,"c":{"cc":3}}','$.c.cc'); -- 3
 ```
 
-
 #### JSON_QUERY : 从 JSON 字符串中提取对象或数组
 
-
 如果值不是对象或者数组、会报错或者返回NULL
-
-
-
 
 ```SQL
 select JSON_QUERY('{"a":1,"b":2,"c":{"cc":3}}','$.c.cc'); -- Null
@@ -43,29 +39,19 @@ select JSON_QUERY('{"a":1,"b":2,"c":{"cc":3}}','$.c.cc'); -- Null
 select JSON_QUERY('{"a":1,"b":2,"c":{"cc":3}}','$.c'); -- {"cc":3}
 ```
 
-
-
-
 #### JSON_MODIFY : 更新 JSON 字符串中属性的值，并返回已更新的 JSON 字符串
-
 
 ```SQL
 -- 语法
-JSON_MODIFY ( expression , path , newValue )  
+JSON_MODIFY ( expression , path , newValue )
 
 -- 示例
 select JSON_MODIFY('{"a":1,"b":2,"c":{"cc":3}}','$.c','{dd:4}'); -- {"a":1,"b":2,"c":"{dd:4}"}
 ```
 
-
-
 #### [将JSON 集合转换为行集](https://learn.microsoft.com/zh-cn/sql/relational-databases/json/json-data-sql-server?view=sql-server-ver16)
 
-
 如果必须基于 JSON 数据创建查询或报表，可以通过调用 [OPENJSON](https://learn.microsoft.com/zh-cn/sql/relational-databases/json/convert-json-data-to-rows-and-columns-with-openjson-sql-server?view=sql-server-ver16) 行集函数，轻松地将 JSON 数据转换为行与列 。
-
-
-
 
 ```SQL
 DECLARE @json NVARCHAR(MAX);
@@ -82,21 +68,22 @@ FROM OPENJSON(@json)
     lastName NVARCHAR(50) '$.info.surname',
     age INT,
     dateOfBirth DATETIME2 '$.dob'
-  ); 
+  );
 ```
+
 ```SQL
 DECLARE @json NVARCHAR(MAX);
-SET @json = N'[  
+SET @json = N'[
   {"id": 2, "info": {"name": "John", "surname": "Smith"}, "age": 25},
-  {"id": 5, "info": {"name": "Jane", "surname": "Smith", "skills": ["SQL", "C#", "Azure"]}, "dob": "2005-11-04T12:00:00"}  
+  {"id": 5, "info": {"name": "Jane", "surname": "Smith", "skills": ["SQL", "C#", "Azure"]}, "dob": "2005-11-04T12:00:00"}
 ]';
 
-SELECT id, firstName, lastName, age, dateOfBirth, skill  
-FROM OPENJSON(@json)  
+SELECT id, firstName, lastName, age, dateOfBirth, skill
+FROM OPENJSON(@json)
   WITH (
     id INT 'strict $.id',
     firstName NVARCHAR(50) '$.info.name',
-    lastName NVARCHAR(50) '$.info.surname',  
+    lastName NVARCHAR(50) '$.info.surname',
     age INT,
     dateOfBirth DATETIME2 '$.dob',
     skills NVARCHAR(MAX) '$.info.skills' AS JSON
@@ -105,9 +92,7 @@ OUTER APPLY OPENJSON(skills)
   WITH (skill NVARCHAR(8) '$');
 ```
 
-
 #### 将 SQL Server 数据转换为 JSON 或导出 JSON
-
 
 ```SQL
 SELECT id, firstName AS "info.name", lastName AS "info.surname", age, dateOfBirth AS dob
@@ -115,27 +100,18 @@ FROM People
 FOR JSON PATH;
 ```
 
-
-
-
 #### OPENJSON
-
 
 在不提供结果的显式架构的情况下使用 OPENJSON 函数时（即，在 OPENJSON 之后不使用 WITH 子句），该函数将返回包含以下三列的表：
 
-* 输入对象中属性的名称（或输入数组中元素的索引）。
-* 属性或数组元素的值。
-* 类型（例如，字符串、数字、布尔值、数组或对象）。
-OPENJSON 以单独的行返回 JSON 对象的每个属性或数组的每个元素。
-
-
+- 输入对象中属性的名称（或输入数组中元素的索引）。
+- 属性或数组元素的值。
+- 类型（例如，字符串、数字、布尔值、数组或对象）。
+  OPENJSON 以单独的行返回 JSON 对象的每个属性或数组的每个元素。
 
 ##### 具有默认输出的 OPENJSON
 
-
-下面是使用具有默认架构（即不包含可选的 WITH 子句）的 OPENJSON 的快捷示例，该示例为 JSON 对象的每个属性返回一行。  
-
-
+下面是使用具有默认架构（即不包含可选的 WITH 子句）的 OPENJSON 的快捷示例，该示例为 JSON 对象的每个属性返回一行。
 
 ```SQL
 DECLARE @json NVARCHAR(MAX)
@@ -146,66 +122,59 @@ SELECT *
 FROM OPENJSON(@json);
 ```
 
-
 ##### 具有显式结构的 OPENJSON 输出
-
 
 如果使用 OPENJSON 函数的 WITH 子句指定结果的架构，该函数返回的表只包含 WITH 子句中定义的列。 在可选的 WITH 子句中，指定一组输出列、列类型和每个输出值的 JSON 源属性的路径。 OPENJSON 循环访问 JSON 对象的数组，读取每一列的指定路径上的值，并将值转换为指定类型。
 
-
-
-
 ```SQL
 DECLARE @json NVARCHAR(MAX)
-SET @json =   
-  N'[  
-       {  
-         "Order": {  
-           "Number":"SO43659",  
-           "Date":"2011-05-31T00:00:00"  
-         },  
-         "AccountNumber":"AW29825",  
-         "Item": {  
-           "Price":2024.9940,  
-           "Quantity":1  
-         }  
-       },  
-       {  
-         "Order": {  
-           "Number":"SO43661",  
-           "Date":"2011-06-01T00:00:00"  
-         },  
-         "AccountNumber":"AW73565",  
-         "Item": {  
-           "Price":2024.9940,  
-           "Quantity":3  
-         }  
-      }  
- ]'  
-   
-SELECT * FROM  
- OPENJSON ( @json )  
-WITH (   
-              Number   varchar(200) '$.Order.Number' ,  
-              Date     datetime     '$.Order.Date',  
-              Customer varchar(200) '$.AccountNumber',  
-              Quantity int          '$.Item.Quantity'  
- ) 
+SET @json =
+  N'[
+       {
+         "Order": {
+           "Number":"SO43659",
+           "Date":"2011-05-31T00:00:00"
+         },
+         "AccountNumber":"AW29825",
+         "Item": {
+           "Price":2024.9940,
+           "Quantity":1
+         }
+       },
+       {
+         "Order": {
+           "Number":"SO43661",
+           "Date":"2011-06-01T00:00:00"
+         },
+         "AccountNumber":"AW73565",
+         "Item": {
+           "Price":2024.9940,
+           "Quantity":3
+         }
+      }
+ ]'
+
+SELECT * FROM
+ OPENJSON ( @json )
+WITH (
+              Number   varchar(200) '$.Order.Number' ,
+              Date     datetime     '$.Order.Date',
+              Customer varchar(200) '$.AccountNumber',
+              Quantity int          '$.Item.Quantity'
+ )
 ```
 
-
 ##### 返回对象的各个属性
-
 
 ```SQL
 -- 原始
  SELECT *
-FROM OPENJSON('{"name":"John","surname":"Doe","age":45}') 
+FROM OPENJSON('{"name":"John","surname":"Doe","age":45}')
 
 -- 分析
 SELECT *
-FROM OPENJSON('{"name":"John","surname":"Doe","age":45}') 
-with 
+FROM OPENJSON('{"name":"John","surname":"Doe","age":45}')
+with
 (
 name nvarchar(255),
 surname nvarchar(255),
@@ -214,77 +183,67 @@ age nvarchar(255)
 
 ```
 
-
-#####  返回数组各元素
-
+##### 返回数组各元素
 
 ```SQL
 SELECT *
-FROM OPENJSON('["en-GB", "en-UK","de-AT","es-AR","sr-Cyrl"]') 
+FROM OPENJSON('["en-GB", "en-UK","de-AT","es-AR","sr-Cyrl"]')
 ```
 
-
 ##### 将 JSON 转换成临时表
-
 
 ```SQL
 -- 以下查询返回 info 对象的所有属性
 DECLARE @json NVARCHAR(MAX)
 
-SET @json=N'{  
-     "info":{    
-       "type":1,  
-       "address":{    
-         "town":"Bristol",  
-         "county":"Avon",  
-         "country":"England"  
-       },  
-       "tags":["Sport", "Water polo"]  
-    },  
-    "type":"Basic"  
+SET @json=N'{
+     "info":{
+       "type":1,
+       "address":{
+         "town":"Bristol",
+         "county":"Avon",
+         "country":"England"
+       },
+       "tags":["Sport", "Water polo"]
+    },
+    "type":"Basic"
  }'
 
 SELECT *
 FROM OPENJSON(@json,N'lax $.info')
 ```
 
-
 ##### 使用 WITH 子句设置输出格式
-
 
 ```SQL
 DECLARE @json NVARCHAR(MAX) =
-N'{"someObject":   
-    {"someArray":  
-      [  
-          {"k1": 11, "k2": null, "k3": "text"},  
-          {"k1": 21, "k2": "text2", "k4": { "data": "text4" }},  
-          {"k1": 31, "k2": 32},  
-          {"k1": 41, "k2": null, "k4": { "data": false }}     
-       ]  
-    }  
- }'  
-   
-SELECT * FROM  
- OPENJSON(@json, N'lax $.someObject.someArray')  
-WITH ( k1 int,   
-        k2 varchar(100),  
-        col3 varchar(6) N'$.k3',  
-        col4 varchar(10) N'lax $.k4.data',  
-        col5 nvarchar(MAX) N'lax $.k4' AS JSON, 
-        array_element nvarchar(MAX) N'$' AS JSON  
- )   
-```
+N'{"someObject":
+    {"someArray":
+      [
+          {"k1": 11, "k2": null, "k3": "text"},
+          {"k1": 21, "k2": "text2", "k4": { "data": "text4" }},
+          {"k1": 31, "k2": 32},
+          {"k1": 41, "k2": null, "k4": { "data": false }}
+       ]
+    }
+ }'
 
+SELECT * FROM
+ OPENJSON(@json, N'lax $.someObject.someArray')
+WITH ( k1 int,
+        k2 varchar(100),
+        col3 varchar(6) N'$.k3',
+        col4 varchar(10) N'lax $.k4.data',
+        col5 nvarchar(MAX) N'lax $.k4' AS JSON,
+        array_element nvarchar(MAX) N'$' AS JSON
+ )
+```
 
 ##### [使用 FOR JSON 将查询结果格式化为 JSON](https://learn.microsoft.com/zh-cn/sql/relational-databases/json/format-query-results-as-json-with-for-json-sql-server?view=sql-server-ver16)
 
+- 使用 FOR JSON PATH 来保持对 JSON 输出格式的完全控制。 你可以创建包装对象并嵌套复杂属性。
 
-* 使用 FOR JSON PATH 来保持对 JSON 输出格式的完全控制。 你可以创建包装对象并嵌套复杂属性。
-
-* 若要根据 SELECT 语句的结构自动格式化 JSON 输出，请使用 FOR JSON AUTO。
-
-
+- 若要根据 SELECT 语句的结构自动格式化 JSON 输出，请使用 FOR JSON AUTO。
 
 ```SQL
 SELECT name, surname
@@ -292,160 +251,137 @@ FROM emp
 FOR JSON AUTO;
 ```
 
-
-
-
-
-
 ### 聚合函数
-* 用途：多行数据汇总计算
-* 常用函数：SUM()、AVG()、COUNT()、MIN()/MAX()、STRING_AGG()（字符串拼接）
-* 场景：报表统计、数据分析
-#### AVG : 平均值计算
 
+- 用途：多行数据汇总计算
+- 常用函数：SUM()、AVG()、COUNT()、MIN()/MAX()、STRING_AGG()（字符串拼接）
+- 场景：报表统计、数据分析
+
+#### AVG : 平均值计算
 
 ```SQL
 -- 语法
-AVG ( [ ALL | DISTINCT ] expression )  
+AVG ( [ ALL | DISTINCT ] expression )
 [ OVER ( [ partition_by_clause ] order_by_clause ) ]
 ```
 
-
-
 ##### 搭配 GROUP BY 子句使用 SUM 和 AVG 函数
 
-
 ```SQL
-SELECT TerritoryID, AVG(Bonus)as 'Average bonus', SUM(SalesYTD) as 'YTD sales'  
-FROM Sales.SalesPerson  
-GROUP BY TerritoryID;  
-GO  
+SELECT TerritoryID, AVG(Bonus)as 'Average bonus', SUM(SalesYTD) as 'YTD sales'
+FROM Sales.SalesPerson
+GROUP BY TerritoryID;
+GO
 ```
-
-
-
 
 ##### 带 DISTINCT 使用 AVG
 
-
 *DISTINCT*剔除字段中重复值
 
-
 ```sql
-SELECT AVG(DISTINCT ListPrice)  
-FROM Production.Product;  
+SELECT AVG(DISTINCT ListPrice)
+FROM Production.Product;
 
-SELECT AVG(ListPrice)  
-FROM Production.Product;  
+SELECT AVG(ListPrice)
+FROM Production.Product;
 ```
-
 
 ##### 使用 OVER 子句
 
-
 ```SQL
-SELECT BusinessEntityID, TerritoryID   
-   ,DATEPART(yy,ModifiedDate) AS SalesYear  
-   ,CONVERT(VARCHAR(20),SalesYTD,1) AS  SalesYTD  
-   ,CONVERT(VARCHAR(20),AVG(SalesYTD) OVER (PARTITION BY TerritoryID   
-                                            ORDER BY DATEPART(yy,ModifiedDate)   
-                                           ),1) AS MovingAvg  
-   ,CONVERT(VARCHAR(20),SUM(SalesYTD) OVER (PARTITION BY TerritoryID   
-                                            ORDER BY DATEPART(yy,ModifiedDate)   
-                                            ),1) AS CumulativeTotal  
-FROM Sales.SalesPerson  
-WHERE TerritoryID IS NULL OR TerritoryID < 5  
-ORDER BY TerritoryID,SalesYear;  
+SELECT BusinessEntityID, TerritoryID
+   ,DATEPART(yy,ModifiedDate) AS SalesYear
+   ,CONVERT(VARCHAR(20),SalesYTD,1) AS  SalesYTD
+   ,CONVERT(VARCHAR(20),AVG(SalesYTD) OVER (PARTITION BY TerritoryID
+                                            ORDER BY DATEPART(yy,ModifiedDate)
+                                           ),1) AS MovingAvg
+   ,CONVERT(VARCHAR(20),SUM(SalesYTD) OVER (PARTITION BY TerritoryID
+                                            ORDER BY DATEPART(yy,ModifiedDate)
+                                            ),1) AS CumulativeTotal
+FROM Sales.SalesPerson
+WHERE TerritoryID IS NULL OR TerritoryID < 5
+ORDER BY TerritoryID,SalesYear;
 ```
 
-  
 #### COUNT
-
 
 ```SQL
 -- 语法
 
--- Aggregation Function Syntax  
-COUNT ( { [ [ ALL | DISTINCT ] expression ] | * } )  
+-- Aggregation Function Syntax
+COUNT ( { [ [ ALL | DISTINCT ] expression ] | * } )
 
--- Analytic Function Syntax  
-COUNT ( [ ALL ]  { expression | * } ) OVER ( [ <partition_by_clause> ] )  
+-- Analytic Function Syntax
+COUNT ( [ ALL ]  { expression | * } ) OVER ( [ <partition_by_clause> ] )
 ```
-
 
 ##### 使用 COUNT 和 DISTINCT
 
-
 ```SQL
-SELECT COUNT(DISTINCT Title)  
-FROM HumanResources.Employee;  
+SELECT COUNT(DISTINCT Title)
+FROM HumanResources.Employee;
 ```
 
-##### 使用 COUNT(*)
-
+##### 使用 COUNT(\*)
 
 ```SQL
-SELECT COUNT(*)  
-FROM HumanResources.Employee;  
+SELECT COUNT(*)
+FROM HumanResources.Employee;
 ```
-
 
 ##### 使用OVER子句
 
-
 ```SQL
-SELECT DISTINCT Name  
-       , MIN(Rate) OVER (PARTITION BY edh.DepartmentID) AS MinSalary  
-       , MAX(Rate) OVER (PARTITION BY edh.DepartmentID) AS MaxSalary  
-       , AVG(Rate) OVER (PARTITION BY edh.DepartmentID) AS AvgSalary  
-       ,COUNT(edh.BusinessEntityID) OVER (PARTITION BY edh.DepartmentID) AS EmployeesPerDept  
-FROM HumanResources.EmployeePayHistory AS eph  
-JOIN HumanResources.EmployeeDepartmentHistory AS edh  
-     ON eph.BusinessEntityID = edh.BusinessEntityID  
-JOIN HumanResources.Department AS d  
+SELECT DISTINCT Name
+       , MIN(Rate) OVER (PARTITION BY edh.DepartmentID) AS MinSalary
+       , MAX(Rate) OVER (PARTITION BY edh.DepartmentID) AS MaxSalary
+       , AVG(Rate) OVER (PARTITION BY edh.DepartmentID) AS AvgSalary
+       ,COUNT(edh.BusinessEntityID) OVER (PARTITION BY edh.DepartmentID) AS EmployeesPerDept
+FROM HumanResources.EmployeePayHistory AS eph
+JOIN HumanResources.EmployeeDepartmentHistory AS edh
+     ON eph.BusinessEntityID = edh.BusinessEntityID
+JOIN HumanResources.Department AS d
 ON d.DepartmentID = edh.DepartmentID
-WHERE edh.EndDate IS NULL  
-ORDER BY Name;  
+WHERE edh.EndDate IS NULL
+ORDER BY Name;
 ```
-
-
-
 
 #### MAX、MIN、SUM
 
-
 ```SQL
--- 语法 
+-- 语法
 
--- Aggregation Function Syntax  
-MAX( [ ALL | DISTINCT ] expression )  
-  
--- Analytic Function Syntax  
-MAX ([ ALL ] expression) OVER ( <partition_by_clause> [ <order_by_clause> ] )  
+-- Aggregation Function Syntax
+MAX( [ ALL | DISTINCT ] expression )
+
+-- Analytic Function Syntax
+MAX ([ ALL ] expression) OVER ( <partition_by_clause> [ <order_by_clause> ] )
 ```
 
 ```SQL
-SELECT DISTINCT Name  
-       , MIN(Rate) OVER (PARTITION BY edh.DepartmentID) AS MinSalary  
-       , MAX(Rate) OVER (PARTITION BY edh.DepartmentID) AS MaxSalary  
-       , AVG(Rate) OVER (PARTITION BY edh.DepartmentID) AS AvgSalary  
-       ,COUNT(edh.BusinessEntityID) OVER (PARTITION BY edh.DepartmentID) AS EmployeesPerDept  
-FROM HumanResources.EmployeePayHistory AS eph  
-JOIN HumanResources.EmployeeDepartmentHistory AS edh  
-     ON eph.BusinessEntityID = edh.BusinessEntityID  
-JOIN HumanResources.Department AS d  
- ON d.DepartmentID = edh.DepartmentID  
-WHERE edh.EndDate IS NULL  
-ORDER BY Name;  
+SELECT DISTINCT Name
+       , MIN(Rate) OVER (PARTITION BY edh.DepartmentID) AS MinSalary
+       , MAX(Rate) OVER (PARTITION BY edh.DepartmentID) AS MaxSalary
+       , AVG(Rate) OVER (PARTITION BY edh.DepartmentID) AS AvgSalary
+       ,COUNT(edh.BusinessEntityID) OVER (PARTITION BY edh.DepartmentID) AS EmployeesPerDept
+FROM HumanResources.EmployeePayHistory AS eph
+JOIN HumanResources.EmployeeDepartmentHistory AS edh
+     ON eph.BusinessEntityID = edh.BusinessEntityID
+JOIN HumanResources.Department AS d
+ ON d.DepartmentID = edh.DepartmentID
+WHERE edh.EndDate IS NULL
+ORDER BY Name;
 ```
 
 用途：多行数据汇总计算
 常用函数：SUM()、AVG()、COUNT()、MIN()/MAX()、STRING_AGG()（字符串拼接）
 场景：报表统计、数据分析
+
 ### 配置
-* 用途：获取系统配置信息
-* 常用函数：@@VERSION（SQL Server版本）、SERVERPROPERTY()（服务器属性）、SESSIONPROPERTY()（会话设置）
-* 场景：系统监控、兼容性检查
+
+- 用途：获取系统配置信息
+- 常用函数：@@VERSION（SQL Server版本）、SERVERPROPERTY()（服务器属性）、SESSIONPROPERTY()（会话设置）
+- 场景：系统监控、兼容性检查
 
 |       配置        |                      说明                      |
 | :---------------: | :--------------------------------------------: |
@@ -457,29 +393,26 @@ ORDER BY Name;
 |      @@SPID       |           返回当前用户进程的会话 ID            |
 |     @@VERSION     |      当前 SQL Server 安装的系统和生成信息      |
 
-
 ### 逻辑函数
-* 用途：条件判断和逻辑运算
-* 常用函数：IIF()（简单IF）、CHOOSE()（索引选择）、COALESCE()（返回第一个非NULL值）、NULLIF()（相等返回NULL）
-* 场景：数据清洗、条件分支简化
-#### CHOOSE
 
+- 用途：条件判断和逻辑运算
+- 常用函数：IIF()（简单IF）、CHOOSE()（索引选择）、COALESCE()（返回第一个非NULL值）、NULLIF()（相等返回NULL）
+- 场景：数据清洗、条件分支简化
+
+#### CHOOSE
 
 在 SQL Server 中从值列表返回指定索引处的项。
 
-
 ```SQL
-SELECT CHOOSE ( 3, 'Manager', 'Director', 'Developer', 'Tester' ) AS Result;  
+SELECT CHOOSE ( 3, 'Manager', 'Director', 'Developer', 'Tester' ) AS Result;
 
-SELECT Name, ModifiedDate, 
-CHOOSE(MONTH(ModifiedDate),'Winter','Winter', 'Spring','Spring','Spring','Summer','Summer',   
+SELECT Name, ModifiedDate,
+CHOOSE(MONTH(ModifiedDate),'Winter','Winter', 'Spring','Spring','Spring','Summer','Summer',
                           'Summer','Autumn','Autumn','Autumn','Winter') AS Quarter_Modified
 FROM SalesLT.ProductModel AS PM
 WHERE Name LIKE '%Frame%'
-ORDER BY ModifiedDate;  
+ORDER BY ModifiedDate;
 ```
-
-
 
 #### IIF
 
@@ -488,250 +421,236 @@ ORDER BY ModifiedDate;
 IIF( boolean_expression, true_value, false_value )
 
 
-DECLARE @P INT = NULL, @S INT = NULL;  
+DECLARE @P INT = NULL, @S INT = NULL;
 SELECT [Result] = IIF( 45 > 30, @P, @S );
 ```
 
-
 ### 排名函数
-* 用途：数据排序和分组排名
-* 常用函数：ROW_NUMBER()（行号）、RANK()（允许并列）、DENSE_RANK()（密集排名）、NTILE()（数据分桶）
-* 场景：分页查询、TOP N分析
+
+- 用途：数据排序和分组排名
+- 常用函数：ROW_NUMBER()（行号）、RANK()（允许并列）、DENSE_RANK()（密集排名）、NTILE()（数据分桶）
+- 场景：分页查询、TOP N分析
 
 排名函数为分区中的每一行返回一个排名值。根据所使用的函数，某些行可能会收到与其他行相同的值。排名函数是不确定的。
 
 ```SQL
-SELECT p.FirstName, p.LastName  
-    ,ROW_NUMBER() OVER (ORDER BY a.PostalCode) AS "Row Number"  
-    ,RANK() OVER (ORDER BY a.PostalCode) AS Rank  
-    ,DENSE_RANK() OVER (ORDER BY a.PostalCode) AS "Dense Rank"  
-    ,NTILE(4) OVER (ORDER BY a.PostalCode) AS Quartile  
-    ,s.SalesYTD  
-    ,a.PostalCode  
-FROM Sales.SalesPerson AS s   
-    INNER JOIN Person.Person AS p   
-        ON s.BusinessEntityID = p.BusinessEntityID  
-    INNER JOIN Person.Address AS a   
-        ON a.AddressID = p.BusinessEntityID  
-WHERE TerritoryID IS NOT NULL AND SalesYTD <> 0;  
+SELECT p.FirstName, p.LastName
+    ,ROW_NUMBER() OVER (ORDER BY a.PostalCode) AS "Row Number"
+    ,RANK() OVER (ORDER BY a.PostalCode) AS Rank
+    ,DENSE_RANK() OVER (ORDER BY a.PostalCode) AS "Dense Rank"
+    ,NTILE(4) OVER (ORDER BY a.PostalCode) AS Quartile
+    ,s.SalesYTD
+    ,a.PostalCode
+FROM Sales.SalesPerson AS s
+    INNER JOIN Person.Person AS p
+        ON s.BusinessEntityID = p.BusinessEntityID
+    INNER JOIN Person.Address AS a
+        ON a.AddressID = p.BusinessEntityID
+WHERE TerritoryID IS NOT NULL AND SalesYTD <> 0;
 ```
 
-<table aria-label="表 1" >
-<thead>
-<tr>
-<th>FirstName</th>
-<th>LastName</th>
-<th>Row Number</th>
-<th>Rank</th>
-<th>Dense Rank</th>
-<th>Quartile</th>
-<th>SalesYTD</th>
-<th>PostalCode</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Michael</td>
-<td>Blythe</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>4557045.0459</td>
-<td>98027</td>
-</tr>
-<tr>
-<td>Linda</td>
-<td>Mitchell</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>5200475.2313</td>
-<td>98027</td>
-</tr>
-<tr>
-<td>Jillian</td>
-<td>Carson</td>
-<td>3</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>3857163.6332</td>
-<td>98027</td>
-</tr>
-<tr>
-<td>Garrett</td>
-<td>Vargas</td>
-<td>4</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1764938.9859</td>
-<td>98027</td>
-</tr>
-<tr>
-<td>Tsvi</td>
-<td>Reiter</td>
-<td>5</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>2811012.7151</td>
-<td>98027</td>
-</tr>
-<tr>
-<td>Shu</td>
-<td>Ito</td>
-<td>6</td>
-<td>6</td>
-<td>2</td>
-<td>2</td>
-<td>3018725.4858</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>José</td>
-<td>Saraiva</td>
-<td>7</td>
-<td>6</td>
-<td>2</td>
-<td>2</td>
-<td>3189356.2465</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>David</td>
-<td>Campbell</td>
-<td>8</td>
-<td>6</td>
-<td>2</td>
-<td>3</td>
-<td>3587378.4257</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>Tete</td>
-<td>Mensa-Annan</td>
-<td>9</td>
-<td>6</td>
-<td>2</td>
-<td>3</td>
-<td>1931620.1835</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>Lynn</td>
-<td>Tsoflias</td>
-<td>10</td>
-<td>6</td>
-<td>2</td>
-<td>3</td>
-<td>1758385.926</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>Rachel</td>
-<td>Valdez</td>
-<td>11</td>
-<td>6</td>
-<td>2</td>
-<td>4</td>
-<td>2241204.0424</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>Jae</td>
-<td>Pak</td>
-<td>12</td>
-<td>6</td>
-<td>2</td>
-<td>4</td>
-<td>5015682.3752</td>
-<td>98055</td>
-</tr>
-<tr>
-<td>Ranjit</td>
-<td>Varkey Chudukatil</td>
-<td>13</td>
-<td>6</td>
-<td>2</td>
-<td>4</td>
-<td>3827950.238</td>
-<td>98055</td>
-</tr>
-</tbody>
+<table aria-label="表 1">
+  <thead>
+    <tr>
+      <th>FirstName</th>
+      <th>LastName</th>
+      <th>Row Number</th>
+      <th>Rank</th>
+      <th>Dense Rank</th>
+      <th>Quartile</th>
+      <th>SalesYTD</th>
+      <th>PostalCode</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Michael</td>
+      <td>Blythe</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>4557045.0459</td>
+      <td>98027</td>
+    </tr>
+    <tr>
+      <td>Linda</td>
+      <td>Mitchell</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5200475.2313</td>
+      <td>98027</td>
+    </tr>
+    <tr>
+      <td>Jillian</td>
+      <td>Carson</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3857163.6332</td>
+      <td>98027</td>
+    </tr>
+    <tr>
+      <td>Garrett</td>
+      <td>Vargas</td>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1764938.9859</td>
+      <td>98027</td>
+    </tr>
+    <tr>
+      <td>Tsvi</td>
+      <td>Reiter</td>
+      <td>5</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2811012.7151</td>
+      <td>98027</td>
+    </tr>
+    <tr>
+      <td>Shu</td>
+      <td>Ito</td>
+      <td>6</td>
+      <td>6</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3018725.4858</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>José</td>
+      <td>Saraiva</td>
+      <td>7</td>
+      <td>6</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3189356.2465</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>David</td>
+      <td>Campbell</td>
+      <td>8</td>
+      <td>6</td>
+      <td>2</td>
+      <td>3</td>
+      <td>3587378.4257</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>Tete</td>
+      <td>Mensa-Annan</td>
+      <td>9</td>
+      <td>6</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1931620.1835</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>Lynn</td>
+      <td>Tsoflias</td>
+      <td>10</td>
+      <td>6</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1758385.926</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>Rachel</td>
+      <td>Valdez</td>
+      <td>11</td>
+      <td>6</td>
+      <td>2</td>
+      <td>4</td>
+      <td>2241204.0424</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>Jae</td>
+      <td>Pak</td>
+      <td>12</td>
+      <td>6</td>
+      <td>2</td>
+      <td>4</td>
+      <td>5015682.3752</td>
+      <td>98055</td>
+    </tr>
+    <tr>
+      <td>Ranjit</td>
+      <td>Varkey Chudukatil</td>
+      <td>13</td>
+      <td>6</td>
+      <td>2</td>
+      <td>4</td>
+      <td>3827950.238</td>
+      <td>98055</td>
+    </tr>
+  </tbody>
 </table>
 
-
-
-#### DENSE_RANK 
-
+#### DENSE_RANK
 
 此函数返回结果集分区中每行的排名，排名值没有间断。 特定行的排名等于该特定行之前不同排名值的数量加一。
 
 ```SQL
 -- 语法
-DENSE_RANK ( ) OVER ( [ <partition_by_clause> ] < order_by_clause > )  
+DENSE_RANK ( ) OVER ( [ <partition_by_clause> ] < order_by_clause > )
 
-SELECT i.ProductID, p.Name, i.LocationID, i.Quantity  
-    ,DENSE_RANK() OVER   
-    (PARTITION BY i.LocationID ORDER BY i.Quantity DESC) AS Rank  
-FROM Production.ProductInventory AS i   
-INNER JOIN Production.Product AS p   
-    ON i.ProductID = p.ProductID  
-WHERE i.LocationID BETWEEN 3 AND 4  
-ORDER BY i.LocationID;  
+SELECT i.ProductID, p.Name, i.LocationID, i.Quantity
+    ,DENSE_RANK() OVER
+    (PARTITION BY i.LocationID ORDER BY i.Quantity DESC) AS Rank
+FROM Production.ProductInventory AS i
+INNER JOIN Production.Product AS p
+    ON i.ProductID = p.ProductID
+WHERE i.LocationID BETWEEN 3 AND 4
+ORDER BY i.LocationID;
 ```
 
-
-
 #### RANK
-
 
 返回结果集分区内每一行的排名。行的排名是相关行之前的排名数加1
 
 ```SQL
-RANK ( ) OVER ( [ partition_by_clause ] order_by_clause ) 
+RANK ( ) OVER ( [ partition_by_clause ] order_by_clause )
 ```
 
-
-#### NTILE 
-
+#### NTILE
 
 将有序分区中的行分发到指定数目的组中。 各个组有编号，编号从一开始。 对于每一个行，NTILE 将返回此行所属的组的编号。
 
 ```SQL
-NTILE (integer_expression) OVER ( [ <partition_by_clause> ] < order_by_clause > )  
+NTILE (integer_expression) OVER ( [ <partition_by_clause> ] < order_by_clause > )
 ```
+
 ```SQL
-SELECT p.FirstName, p.LastName  
-    ,NTILE(4) OVER(ORDER BY SalesYTD DESC) AS Quartile  
-    ,CONVERT(NVARCHAR(20),s.SalesYTD,1) AS SalesYTD  
-    , a.PostalCode  
-FROM Sales.SalesPerson AS s   
-INNER JOIN Person.Person AS p   
-    ON s.BusinessEntityID = p.BusinessEntityID  
-INNER JOIN Person.Address AS a   
-    ON a.AddressID = p.BusinessEntityID  
-WHERE TerritoryID IS NOT NULL   
-    AND SalesYTD <> 0;  
+SELECT p.FirstName, p.LastName
+    ,NTILE(4) OVER(ORDER BY SalesYTD DESC) AS Quartile
+    ,CONVERT(NVARCHAR(20),s.SalesYTD,1) AS SalesYTD
+    , a.PostalCode
+FROM Sales.SalesPerson AS s
+INNER JOIN Person.Person AS p
+    ON s.BusinessEntityID = p.BusinessEntityID
+INNER JOIN Person.Address AS a
+    ON a.AddressID = p.BusinessEntityID
+WHERE TerritoryID IS NOT NULL
+    AND SalesYTD <> 0;
 ```
 
-
-
-#### ROW_NUMBER 
-
+#### ROW_NUMBER
 
 对结果集的输出进行编号。更具体地说，返回结果集分区内行的序号，每个分区中的第一行从 1 开始。
 
 ROW_NUMBER并且RANK是相似的。ROW_NUMBER按顺序编号所有行（例如 1、2、3、4、5）。RANK为平局提供相同的数值（例如 1、2、2、4、5）。
 
-
 ```SQL
-ROW_NUMBER ( )   
-OVER ( [ PARTITION BY value_expression , ... [ n ] ] order_by_clause )  
+ROW_NUMBER ( )
+OVER ( [ PARTITION BY value_expression , ... [ n ] ] order_by_clause )
 ```
-
-
-

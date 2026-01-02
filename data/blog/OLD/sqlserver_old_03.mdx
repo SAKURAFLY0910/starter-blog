@@ -11,28 +11,31 @@ summary: 'FOR XML子句'
 
 ### 环境要求
 
-* [ MicroSoft SqlServer 文档 ](https://docs.microsoft.com/zh-cn/sql/relational-databases/xml/for-xml-sql-server?view=sql-server-ver16)     
+- [ MicroSoft SqlServer 文档 ](https://docs.microsoft.com/zh-cn/sql/relational-databases/xml/for-xml-sql-server?view=sql-server-ver16)
 
-* 所有版本 SQL Server版本均支持此语法   
-
+- 所有版本 SQL Server版本均支持此语法
 
 ### 基本初识
 
 在 FOR XML 子句中，有 **RAW**、**AUTO**、**EXPLICIT**、**PATH** 四种模式。
 
 ##### RAW 模式：
+
 RAW 模式在 SELECT 语句返回的行集中为每个行生成一个行元素。 可以通过编写嵌套 FOR XML 查询来生成 XML 层次结构。
 
 ##### AUTO 模式：
+
 AUTO 模式将基于指定 SELECT 语句的方式来使用试探性方法在 XML 结果中生成嵌套。 您对生成的 XML 的形状具有最低限度的控制能力。 除了 AUTO 模式的试探性方法生成的 XML 形状之外，还可以编写 FOR XML 查询来生成 XML 层次结构。
+
 ##### EXPLICIT模式：
+
 EXPLICIT 模式允许对 XML 的形状进行更多控制。 您可以随意混合属性和元素来确定 XML 的形状。
+
 ##### PATH模式：
+
 PATH 模式与嵌套 FOR XML 查询功能一起以较简单的方式提供了 EXPLICIT 模式的灵活性。
 
-
 ### 测试数据库：
-
 
 ```SQL
 CREATE TABLE [dbo].[userTable](
@@ -64,20 +67,14 @@ INSERT [dbo].[userTable] ([id],[encode], [name]) VALUES (N'79BB7B1A-CAC9-4D2E-A0
 | FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4 |  003   | 王五 |
 | 79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A |  004   | NULL |
 
-
-
 ### 使用示例：
-
 
 将查询结果作为行集返回，即只有一个查询行，此行只有一个查询列。
 多个指令可使用 **逗号** 分割开。
 
-
-
 #### RAW模式
 
 ##### 示例一 : 基本使用
-
 
 ```SQL
 select * from userTable  for xml raw ;
@@ -91,9 +88,7 @@ select * from userTable  for xml raw ;
 <row id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
 ```
 
-
 ##### 示例二 : ELEMENTS 指令
-
 
 ```SQL
 select * from userTable for xml raw,ELEMENTS  ;
@@ -122,9 +117,7 @@ select * from userTable for xml raw,ELEMENTS  ;
 </row>
 ```
 
-
 ##### 示例三 : XSINIL 添加指令 ELEMENTS
-
 
 ```SQL
 select * from userTable for xml raw,ELEMENTS XSINIL ;
@@ -154,9 +147,7 @@ select * from userTable for xml raw,ELEMENTS XSINIL ;
 </row>
 ```
 
-
-
-##### 示例四 : XMLDATA 指令 
+##### 示例四 : XMLDATA 指令
 
 ```SQL
 select * from userTable for xml raw,XMLDATA  ;
@@ -180,15 +171,12 @@ select * from userTable for xml raw,XMLDATA  ;
 <row xmlns="x-schema:#Schema1" id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
 ```
 
+##### 其他
 
-##### 其他 
-
-
-* **FOR XML RAW ('xx')**: 重命名行元素。
-* **ROOT 指令**： 为 FOR XML 生成的 XML 指定根元素。比如：ROOT('MyRoot');
-* **XMLSCHEMA  指令**： 返回  XSD 架构 。比如：可以使用 XMLSCHEMA ('urn:example.com') 格式指定命名空间 。
-* **BINARY BASE64 指令**： 返回在 varbinary(max)、binary  类型列中存储的 以 base64 编码格式返回二进制数据。
-
+- **FOR XML RAW ('xx')**: 重命名行元素。
+- **ROOT 指令**： 为 FOR XML 生成的 XML 指定根元素。比如：ROOT('MyRoot');
+- **XMLSCHEMA 指令**： 返回 XSD 架构 。比如：可以使用 XMLSCHEMA ('urn:example.com') 格式指定命名空间 。
+- **BINARY BASE64 指令**： 返回在 varbinary(max)、binary 类型列中存储的 以 base64 编码格式返回二进制数据。
 
 #### AUTO 模式
 
@@ -206,11 +194,7 @@ select * from userTable x for xml AUTO;
 <userTable id="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" encode="004" />
 ```
 
-
-
-
 ##### 示例二:
-
 
 先指定 OrderHeader 表中的列，再指定 Cust 表中的列， 因此，将创建第一个 `<OrderHeader>` 元素，然后将 `<Cust>` 子元素添加到其中。
 
@@ -222,10 +206,8 @@ elect OrderHeader.CustomerID,
        Cust.CustomerType
 from Sales.Customer Cust, Sales.SalesOrderHeader OrderHeader
 where Cust.CustomerID = OrderHeader.CustomerID
-for xml auto; 
+for xml auto;
 ```
-
-
 
 ```XML
 <!-- 可结合 ELEMENTS 等其他指令-->
@@ -235,15 +217,13 @@ for xml auto;
 ...
 ```
 
-
 #### PATH 模式
 
-##### 示例一 
-
+##### 示例一
 
 ```SQL
-select * from userTable   for xml PATH 
-``` 
+select * from userTable   for xml PATH
+```
 
 ```XML
 <row>
@@ -267,9 +247,7 @@ select * from userTable   for xml PATH
 </row>
 ```
 
-
 ##### 示例二
-
 
 ```SQL
 select * from userTable  for xml PATH('') ;
@@ -289,9 +267,7 @@ select * from userTable  for xml PATH('') ;
 <encode>004</encode>
 ```
 
-
 ##### 示例三
-
 
 如果列名称以符号 (@) 开头，并且不包含斜杠标记 (/)，则会创建具有相应列值的元素的属性 row
 在对应的语句中，可根据不同模式对表名、列名进行别名的设置而得到相应得到XML结构
@@ -313,13 +289,9 @@ select id as '@part',encode as '@code',name  from userTable  for xml PATH
 <row part="79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A" code="004" />
 ```
 
-
 ##### 示例四
 
-
-如果列名不以符号 () @ 开头，但包含斜杠标记 (/) ，则列名表示 XML 层次结构。 
-
-
+如果列名不以符号 () @ 开头，但包含斜杠标记 (/) ，则列名表示 XML 层次结构。
 
 ```SQL
 select ID as 'ID1/ID2',ENCODE,NAME  from userTable  for xml PATH
@@ -355,18 +327,13 @@ select ID as 'ID1/ID2',ENCODE,NAME  from userTable  for xml PATH
 </row>
 ```
 
-
 ##### 示例五
 
-
-如果指定的列名是通配符 (*) ，则插入该列的内容就好像没有指定列名一样。 如果此列不是xml 类型的列，则此列的内容将作为文本节点插入.
+如果指定的列名是通配符 (\*) ，则插入该列的内容就好像没有指定列名一样。 如果此列不是xml 类型的列，则此列的内容将作为文本节点插入.
 
 ```SQL
-select ID as '*',ENCODE,NAME  from userTable  for xml PATH 
+select ID as '*',ENCODE,NAME  from userTable  for xml PATH
 ```
-
-
-
 
 ```XML
 <row>1A074FE5-BAB3-4B71-932D-393387E94B5F<ENCODE>001</ENCODE><NAME>张三</NAME></row>
@@ -375,25 +342,19 @@ select ID as '*',ENCODE,NAME  from userTable  for xml PATH
 <row>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A<ENCODE>004</ENCODE></row>
 ```
 
-
 ##### 示例六
-
 
 如果列名是某个 XPath 节点测试，将如下表所示映射该列的内容。 如果列名是某个 XPath 节点测试，则该列的内容将映射到相应的节点。 如果该列的 SQL 类型是 xml，将返回一个错误。
 
-| 列名 | 行为 |
-| :--: | :--: |
-| text() | 对于名为 text() 的列，该列中的字符串值将被添加为文本节点。 |
-| comment() | 对于名为 comment() 的列，该列中的字符串值将被添加为 XML 注释。 |
-| node() | 对于节点名称 () 的列，结果与列名称是通配符 () * 时的结果相同。 |
+|       列名       |                                    行为                                    |
+| :--------------: | :------------------------------------------------------------------------: |
+|      text()      |         对于名为 text() 的列，该列中的字符串值将被添加为文本节点。         |
+|    comment()     |       对于名为 comment() 的列，该列中的字符串值将被添加为 XML 注释。       |
+|      node()      |      对于节点名称 () 的列，结果与列名称是通配符 () \* 时的结果相同。       |
 | 处理指令（名称） | 如果列名为处理指令，该列中的字符串值将被添加为此处理指令目标名称的 PI 值。 |
 
-
-
-
-
 ```SQL
-select ID as 'text()',ENCODE as 'comment()',NAME as 'node()'  from userTable  for xml PATH 
+select ID as 'text()',ENCODE as 'comment()',NAME as 'node()'  from userTable  for xml PATH
 ```
 
 ```XML
@@ -403,37 +364,16 @@ select ID as 'text()',ENCODE as 'comment()',NAME as 'node()'  from userTable  fo
 <row>79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A<!--004--></row>
 ```
 
-
 ##### 示例七
-
 
 ```SQL
 select ','+ID   from userTable  for xml PATH('')
 ```
 
-
-
-
 ```XML
 ,1A074FE5-BAB3-4B71-932D-393387E94B5F,F75F5FA1-D8A1-4076-B840-99941DB9038F,FF611E9B-2D28-4C53-A4DE-FE67A16D4FD4,79BB7B1A-CAC9-4D2E-A0CE-56C91F8FF76A
 ```
 
-
-
 #### EXPLICIT 模式
 
-
 具体可参阅[微软官方文档](https://docs.microsoft.com/zh-cn/sql/relational-databases/xml/use-explicit-mode-with-for-xml?view=sql-server-ver16)
-
-
-
-
-
-
-
-
-
-
-
-
-

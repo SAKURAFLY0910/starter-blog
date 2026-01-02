@@ -9,13 +9,15 @@ summary: 'JavaScript基础回顾2'
 
 ### HTML
 
-#### `<meta>` 
+#### `<meta>`
 
 ```HTML
 <!--描述 HTML 文档的元数据:每三十秒刷新界面-->
 <meta http-equiv="refresh" content="2" />
-```   
+```
+
 #### `<link>`
+
 ```HTML
 <!--网站图标-->
     <link
@@ -23,13 +25,17 @@ summary: 'JavaScript基础回顾2'
       href="图片地址"
       type="image/x-icon"
     />
-```   
+```
+
 #### `<base>`
+
 ```HTML
 <!--规定页面上所有链接的默认 URL 和默认目标 置于头部之内-->
 <base href="..." target="_blank">
-```   
+```
+
 #### `<style>`
+
 ```CSS
 /*media属性:对两种不同媒介类型使用不同样式表*/
 <style type="text/css" media="print">
@@ -38,16 +44,14 @@ summary: 'JavaScript基础回顾2'
 
 /*应用样式到元素的父元素及其子元素。*/
 <style type="text/css" scoped>
-```   
-
-
+```
 
 [MDN参考文档](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
 
 [Media Types文档参照](https://www.iana.org/assignments/media-types/media-types.xhtml)
 
-
 #### `img、<map>、<area> 图像映射`
+
 ```HTML
 <img src="planets.gif" width="145" height="126" alt="Planets" usemap="#planetmap">
 
@@ -57,13 +61,16 @@ summary: 'JavaScript基础回顾2'
   <area shape="circle" coords="124,58,8" href="venus.htm" alt="Venus">
 </map>
 ```
+
 #### `<table>`
-|                  属性                 |    表述  | 属性 |  表述   |
-| :----------------------------------: | :--: | :---: | :--: |
-| border | 显示框线 | bgcolor | 表格背景 |
+
+|    属性     |       表述       |    属性     |             表述             |
+| :---------: | :--------------: | :---------: | :--------------------------: |
+|   border    |     显示框线     |   bgcolor   |           表格背景           |
 | cellspacing | 单元格之间的距离 | cellpadding | 单元格内容与其边框之间的空白 |
 
 #### `<ol>`
+
 ```HTML
 <!--type:  a A i I 1 -->
 <ol start="50" type="I" >
@@ -72,51 +79,46 @@ summary: 'JavaScript基础回顾2'
   <li>Milk</li>
 </ol>
 ```
+
 #### iframe
+
 ```HTML
 <iframe loading="lazy" src="demo_iframe.htm" width="200" height="200" frameborder="0" scrolling="auto">
 </iframe>
-```  
-
-
+```
 
 ### HTML5
 
 HTML5是HTML最新的修订版本，2014年10月由万维网联盟（W3C）完成标准制定。
 HTML5的设计目的是为了在移动设备上支持多媒体。
- 
-   
-
 
 #### `<canvas>`
+
 ```HTML
 <!--画布 -->
 <canvas id="myCanvas" width="200" height="100"></canvas>
 ```
+
 [canvas基本了解](https://www.runoob.com/w3cnote/html5-canvas-intro.html)
 
 #### 表单属性
 
-* required  ：  必填                                                    
-* placeholder ： 提示    
-* autofocus  ： 自动聚焦                                    
-* autocomplete ： 自动填充 on/off                                                                       
-* formaction  ： 表单提交的URL地址.覆盖form的action属性  与type="submit"配合使用 
-* formenctype ： 提交到服务器的数据编码  与type="submit"配合使用   “ multipart/form-data ” 
-
+- required ： 必填
+- placeholder ： 提示
+- autofocus ： 自动聚焦
+- autocomplete ： 自动填充 on/off
+- formaction ： 表单提交的URL地址.覆盖form的action属性 与type="submit"配合使用
+- formenctype ： 提交到服务器的数据编码 与type="submit"配合使用 “ multipart/form-data ”
 
 #### 全局属性
-* hidden : 隐藏
-* contenteditable : 元素是否可编辑
-* accesskey  : 配合Alt实现快捷访问超链接
 
-
-
-
+- hidden : 隐藏
+- contenteditable : 元素是否可编辑
+- accesskey : 配合Alt实现快捷访问超链接
 
 ### CSS/CSS3
-#### `<link>引入和@import引入差别`
 
+#### `<link>引入和@import引入差别`
 
 1. 本质的差别：link 属于 XHTML 标签，而 @import 完全是 CSS 提供的一种方式。
 
@@ -126,42 +128,41 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
 
 4. 使用 dom(document o bject model文档对象模型 )控制样式时的差别：当使用 javascript 控制 dom 去改变样式的时候，只能使用 link 标签，因为@import 不是 dom 可以控制的。
 
-
 #### 文本
 
+- 对齐方式 ： text-align
 
-* 对齐方式 ： text-align
-  * center  ： 居中
-  * right   ： 居右
-  * justify : 两端对齐
+  - center ： 居中
+  - right ： 居右
+  - justify : 两端对齐
 
-* 文本修饰 : text-decoration: text-decoration-line text-decoration-color text-decoration-style
-  * overline : 上划线   red   dotted/wavy 
-  * line-through ： 管穿线   red  dotted/wavy 
-  * underline ： 下划线  red   dotted/wavy 
-     * 
+- 文本修饰 : text-decoration: text-decoration-line text-decoration-color text-decoration-style
 
-* 文本转换 ： text-transform
-  * uppercase ： 大写
-  * lowercase ： 小写
-  * capitalize ： 首字母大写
+  - overline : 上划线 red dotted/wavy
+  - line-through ： 管穿线 red dotted/wavy
+  - underline ： 下划线 red dotted/wavy
+    -
 
-* 段落中的文本换行 : white-space
-  * normal ： 默认。空白会被浏览器忽略。
-  * nowrap ： 文本不会换行，文本会在在同一行上继续，直到遇到 br 标签为止。
-  * inherit ： 规定应该从父元素继承 white-space 属性的值。
-  * pre : 空白会被浏览器保留。其行为方式类似 HTML 中的 `<pre>` 标签。
-  * pre-wrap : 保留空白符序列，但是正常地进行换行。
-  * pre-line : 合并空白符序列，但是保留换行符。
-  
-*  单词、汉字间隔  :  word-spacing 
+- 文本转换 ： text-transform
 
-*  字母、汉字 : letter-spacing
+  - uppercase ： 大写
+  - lowercase ： 小写
+  - capitalize ： 首字母大写
 
-*  文本方向 ： direction : rtl   
+- 段落中的文本换行 : white-space
+  - normal ： 默认。空白会被浏览器忽略。
+  - nowrap ： 文本不会换行，文本会在在同一行上继续，直到遇到 br 标签为止。
+  - inherit ： 规定应该从父元素继承 white-space 属性的值。
+  - pre : 空白会被浏览器保留。其行为方式类似 HTML 中的 `<pre>` 标签。
+  - pre-wrap : 保留空白符序列，但是正常地进行换行。
+  - pre-line : 合并空白符序列，但是保留换行符。
+- 单词、汉字间隔 : word-spacing
 
-*  设置元素的垂直对齐 : vertical-align 
+- 字母、汉字 : letter-spacing
 
+- 文本方向 ： direction : rtl
+
+- 设置元素的垂直对齐 : vertical-align
 
 <table class="reference">
 
@@ -171,53 +172,53 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
 </tr>
 
 <tr>
-<td>baseline</td>
-<td>默认。元素放置在父元素的基线上。</td>
+  <td>baseline</td>
+  <td>默认。元素放置在父元素的基线上。</td>
 </tr>
 
 <tr>
-<td>sub</td>
-<td>垂直对齐文本的下标。</td>
+  <td>sub</td>
+  <td>垂直对齐文本的下标。</td>
 </tr>
 
 <tr>
-<td>super</td>
-<td>垂直对齐文本的上标</td>
+  <td>super</td>
+  <td>垂直对齐文本的上标</td>
 </tr>
 
 <tr>
-<td>top</td>
-<td>把元素的顶端与行中最高元素的顶端对齐</td>
+  <td>top</td>
+  <td>把元素的顶端与行中最高元素的顶端对齐</td>
 </tr>
 
 <tr>
-<td>text-top</td>
-<td>把元素的顶端与父元素字体的顶端对齐</td>
+  <td>text-top</td>
+  <td>把元素的顶端与父元素字体的顶端对齐</td>
 </tr>
 
 <tr>
-<td>middle</td>
-<td>把此元素放置在父元素的中部。</td>
+  <td>middle</td>
+  <td>把此元素放置在父元素的中部。</td>
 </tr>
 
 <tr>
-<td>bottom</td>
-<td>使元素及其后代元素的底部与整行的底部对齐。</td>
+  <td>bottom</td>
+  <td>使元素及其后代元素的底部与整行的底部对齐。</td>
 </tr>
 
 <tr>
-<td>text-bottom</td>
-<td>把元素的底端与父元素字体的底端对齐。</td>
+  <td>text-bottom</td>
+  <td>把元素的底端与父元素字体的底端对齐。</td>
 </tr>
 
 <tr>
-<td>length</td>
-<td>将元素升高或降低指定的高度，可以是负数。</td>
+  <td>length</td>
+  <td>将元素升高或降低指定的高度，可以是负数。</td>
 </tr>
 
 <tr>
-<td>%</td>
-<td>使用 "line-height" 属性的百分比值来排列此元素。允许使用负值。</td>
+  <td>%</td>
+  <td>使用 "line-height" 属性的百分比值来排列此元素。允许使用负值。</td>
 </tr>
 
 <tr>
@@ -226,44 +227,41 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
 </tr>
 </tbody></table>
 
+- 边框合并 ： border-collapse:collapse;
 
-*  边框合并 ：	border-collapse:collapse; 
+- 隐藏元素 ： visibility:hidden
 
-*  隐藏元素 ： visibility:hidden 
+- 控制内容溢出元素框时显示的方式 : overflow
+- visible : 默认值。内容不会被修剪，会呈现在元素框之外。
+- hidden ： 内容会被修剪，并且其余内容是不可见的。
+- scroll ： 内容会被修剪，但是浏览器会显示滚动条以便查看其余的内容。
+- auto ： 如果内容被修剪，则浏览器会显示滚动条以便查看其余的内容。
+- inherit ： 规定应该从父元素继承 overflow 属性的值。
 
-*  控制内容溢出元素框时显示的方式 : overflow  
-  * visible : 默认值。内容不会被修剪，会呈现在元素框之外。
-  * hidden ：	内容会被修剪，并且其余内容是不可见的。
-  * scroll ：	内容会被修剪，但是浏览器会显示滚动条以便查看其余的内容。
-  * auto ：	如果内容被修剪，则浏览器会显示滚动条以便查看其余的内容。
-  * inherit ： 规定应该从父元素继承 overflow 属性的值。
+- 文本溢出显示 ： text-overflow
 
-* 文本溢出显示 ： text-overflow 
-  * ellipsis ： 显示省略符号 ... 来代表被修剪的文本
-  * clip ： 剪切文本
-  * string ： 使用给定的字符串来代表被修剪的文本
+  - ellipsis ： 显示省略符号 ... 来代表被修剪的文本
+  - clip ： 剪切文本
+  - string ： 使用给定的字符串来代表被修剪的文本
 
-* 允许长的内容可以自动换行 ： word-wrap:break-word ;
+- 允许长的内容可以自动换行 ： word-wrap:break-word ;
 
-*  元素的总高度和宽度包含内边距和边框 : box-sizing: border-box;
+- 元素的总高度和宽度包含内边距和边框 : box-sizing: border-box;
 
-* box-shadow: h-shadow/水平阴影位置 v-shadow/垂直阴影位置 blur/模糊距离 spread/阴影大小 color/颜色 inset;
-
+- box-shadow: h-shadow/水平阴影位置 v-shadow/垂直阴影位置 blur/模糊距离 spread/阴影大小 color/颜色 inset;
 
 标注内容
 
-* mediatype  :  all/全部 ; print/打印机，screen/用于电脑屏幕，平板，智能手机等,speech/用于屏幕阅读器
-* not: not是用来排除掉某些特定的设备的，比如 @media not print（非打印设备）。
-* only: 用来定某种特别的媒体类型。
-* all: 所有设备，这个应该经常看到。
-* and ：and 操作符用于将多个媒体查询规则组合成单条媒体查询，
-
-
+- mediatype : all/全部 ; print/打印机，screen/用于电脑屏幕，平板，智能手机等,speech/用于屏幕阅读器
+- not: not是用来排除掉某些特定的设备的，比如 @media not print（非打印设备）。
+- only: 用来定某种特别的媒体类型。
+- all: 所有设备，这个应该经常看到。
+- and ：and 操作符用于将多个媒体查询规则组合成单条媒体查询，
 
 #### 多媒体查询
 
-
 ##### 1. 在`<style>`中使用
+
 ```CSS
 /* 多媒体查询语法 */
 @media not|only mediatype and (mediafeature and|or|not mediafeature) {
@@ -299,7 +297,9 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
     }
 }
 ```
+
 ##### 2. 在`<link>`中使用
+
 ```HTML
 <!-- 多媒体查询语法 -->
 <link rel="stylesheet" media="mediatype and|not|only (expressions)" href="print.css">
@@ -307,7 +307,9 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
 <!-- 代码 -->
 <link rel="stylesheet" media="screen and (min-width:300px)" href="print.css">
 ```
+
 ##### 3. 在@import中使用
+
 ```CSS
 /* 多媒体查询语法 */
 @import url('landscape.css') screen and (orientation:landscape);
@@ -316,36 +318,32 @@ HTML5的设计目的是为了在移动设备上支持多媒体。
 @import url('landscape.css') only screen and (min-width:400px);
 ```
 
-
 ### JavaScript
+
 #### 标签
 
-
 可以为代码块设置标签，使用break跳出指定代码框
+
 ```JS
 cars=["BMW","Volvo","Saab","Ford"];
-list: 
+list:
 {
-    document.write(cars[0] + "<br>"); 
-    document.write(cars[1] + "<br>"); 
-    document.write(cars[2] + "<br>"); 
+    document.write(cars[0] + "<br>");
+    document.write(cars[1] + "<br>");
+    document.write(cars[2] + "<br>");
     break list;
-    document.write(cars[3] + "<br>"); 
-    document.write(cars[4] + "<br>"); 
-    document.write(cars[5] + "<br>"); 
+    document.write(cars[3] + "<br>");
+    document.write(cars[4] + "<br>");
+    document.write(cars[5] + "<br>");
 }
 ```
 
-
 #### this
-
 
 all() 和 apply() 是预定义的函数方法。 两个方法可用于调用函数，两个方法的第一个参数必须是对象本身。
 两者的区别在于第二个参数： apply传入的是一个参数数组，也就是将多个参数组合成为一个数组传入，而call则作为call的参数传入（从第二个参数开始）。
 
-
 #### JavaScript 静态方法
-
 
 ```JS
 class Runoob {
@@ -356,19 +354,13 @@ class Runoob {
     return "Hello!!";
   }
 }
- 
+
 let noob = new Runoob("菜鸟教程");
- 
+
 // 可以在类中调用 'hello()' 方法
 document.getElementById("demo").innerHTML = Runoob.hello();
- 
+
 // 不能通过实例化后的对象调用静态方法
 // document.getElementById("demo").innerHTML = noob.hello();
 // 以上代码会报错
 ```
-
-
-
-
-
-

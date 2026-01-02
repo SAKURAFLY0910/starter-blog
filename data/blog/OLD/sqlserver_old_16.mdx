@@ -6,7 +6,8 @@ draft: false
 layout: PostLayout
 summary: '函数是一种可封装特定逻辑并返回结果的数据库对象，主要分为标量函数（返回单个值）和表值函数（返回结果集）。它用于简化复杂计算、提高代码复用性，常见于数据转换、条件筛选等场景。通过CREATE FUNCTION定义后，可在查询中直接调用。使用时需注意性能影响，避免在大量数据处理中使用复杂函数，优先考虑存储过程或内联表值函数以提高效率'
 ---
-<TOCInline toc={props.toc}  />
+
+<TOCInline toc={props.toc} />
 
 ### [表值函数](https://learn.microsoft.com/zh-cn/sql/t-sql/statements/create-function-transact-sql?view=sql-server-ver16)
 
@@ -30,8 +31,6 @@ RETURN
     GROUP BY P.ProductID, P.Name
 );
 ```
-
-
 
 #### 多语句表值函数
 
@@ -76,10 +75,6 @@ END;
 GO
 ```
 
-
-
-
-
 ### 标量函数
 
 ```SQL
@@ -101,14 +96,11 @@ BEGIN
     RETURN @ret;
 END;
 ```
+
 ```SQL
 SELECT ProductModelID, Name, dbo.ufnGetInventoryStock(ProductID)AS CurrentSupply
 FROM Production.Product
 WHERE ProductModelID BETWEEN 75 and 80;
 ```
 
-
-
-
 ### 系统函数
-
