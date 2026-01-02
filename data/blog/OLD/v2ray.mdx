@@ -231,8 +231,8 @@ io: read/write on closed pipe
 ##### 问题排查:
 
 1. 检查时区是否正常
-   **因为服务端和客户端校验较严格,时间差不允许超过90s**  
-    1. 远程连接VPS 2. 执行: date -R 3. 当显示如**Tue, 22 Feb 2022 10:17:22 +0800**,以**+0800**结尾即为正确时区,否则自行查阅[文档](https://jingyan.baidu.com/article/fec7a1e5ec8e341191b4e75f.html)修改时区即可.
+   **因为服务端和客户端校验较严格,时间差不允许超过90s**
+   1. 远程连接VPS 2. 执行: date -R 3. 当显示如**Tue, 22 Feb 2022 10:17:22 +0800**,以**+0800**结尾即为正确时区,否则自行查阅[文档](https://jingyan.baidu.com/article/fec7a1e5ec8e341191b4e75f.html)修改时区即可.
 
 ---
 
