@@ -26,7 +26,7 @@ export default async function Page() {
               <div key={t} className="mt-2 mr-5 mb-2">
                 <Tag text={t} />
                 <Link
-                  href={`/tags/${encodeURIComponent(t)}`}
+                  href={`/tags/${encodeURIComponent(slugify(t))}`}
                   className="-ml-2 text-sm font-semibold text-gray-600 uppercase dark:text-gray-300"
                   aria-label={`View posts tagged ${t}`}
                 >
