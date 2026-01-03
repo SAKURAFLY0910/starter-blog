@@ -87,13 +87,6 @@ export default function Footer() {
             </Link>
           </div>
         </div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          <Link href="/privacy">隐私政策</Link>
-          <span className="mx-1">|</span>
-          <Link href="/terms">使用条款</Link>
-          <span className="mx-1">|</span>
-          <Link href="/sitemap.xml">网站地图</Link>
-        </div>
       </div>
     </footer>
   )
