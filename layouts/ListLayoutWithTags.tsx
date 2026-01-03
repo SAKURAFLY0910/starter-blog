@@ -1,7 +1,5 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import { slug } from 'github-slugger'
 import { formatDate } from 'pliny/utils/formatDate'
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog } from 'contentlayer/generated'
@@ -10,37 +8,25 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
 
+// ✅ 独立的 Pagination 组件，不依赖 usePathname
 interface PaginationProps {
+  basePath: string
   totalPages: number
   currentPage: number
 }
-interface ListLayoutProps {
-  posts: CoreContent<Blog>[]
-  title: string
-  initialDisplayPosts?: CoreContent<Blog>[]
-  pagination?: PaginationProps
-}
 
-function Pagination({ totalPages, currentPage }: PaginationProps) {
-  const pathname = usePathname()
-  const segments = pathname.split('/')
-  const lastSegment = segments[segments.length - 1]
-  const basePath = pathname
-    .replace(/^\//, '') // Remove leading slash
-    .replace(/\/page\/\d+\/?$/, '') // Remove any trailing /page
-    .replace(/\/$/, '') // Remove trailing slash
+function Pagination({ basePath, totalPages, currentPage }: PaginationProps) {
   const prevPage = currentPage - 1 > 0
   const nextPage = currentPage + 1 <= totalPages
 
   return (
     <div className="space-y-2 pt-6 pb-8 md:space-y-5">
       <nav className="flex justify-between">
-        {!prevPage && (
-          <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
+        {!prevPage ? (
+          <button className="cursor-auto disabled:opacity-50" disabled>
             上一页
           </button>
-        )}
-        {prevPage && (
+        ) : (
           <Link
             href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`}
             rel="prev"
@@ -48,15 +34,16 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
             上一页
           </Link>
         )}
+
         <span>
           {currentPage} / {totalPages}
         </span>
-        {!nextPage && (
-          <button className="cursor-auto disabled:opacity-50" disabled={!nextPage}>
+
+        {!nextPage ? (
+          <button className="cursor-auto disabled:opacity-50" disabled>
             下一页
           </button>
-        )}
-        {nextPage && (
+        ) : (
           <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
             下一页
           </Link>
@@ -66,23 +53,32 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
   )
 }
 
+interface ListLayoutProps {
+  posts: CoreContent<Blog>[]
+  title: string
+  initialDisplayPosts?: CoreContent<Blog>[]
+  pagination?: {
+    currentPage: number
+    totalPages: number
+  }
+  currentTag: string
+  // ✅ 新增 basePath prop，由 Server Component 计算好传入
+  basePath: string
+}
+
 export default function ListLayoutWithTags({
   posts,
   title,
   initialDisplayPosts = [],
   pagination,
+  currentTag,
+  basePath,
 }: ListLayoutProps) {
-  const pathname = usePathname()
   const tagCounts = tagData as Record<string, number>
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
 
   const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
-
-  // 修复1: 确保获取到正确的标签名称
-  const currentTag = pathname.split('/tags/')[1] || ''
-  // 修复2: 服务端和客户端统一处理
-  const currentTagSlug = currentTag ? decodeURIComponent(currentTag) : ''
 
   return (
     <>
@@ -93,13 +89,14 @@ export default function ListLayoutWithTags({
           </h1>
         </div>
         <div className="flex sm:space-x-24">
+          {/* 左侧标签栏 */}
           <div className="hidden h-full max-h-screen max-w-[280px] min-w-[280px] flex-wrap overflow-auto rounded-sm bg-gray-50 pt-5 shadow-md sm:flex dark:bg-gray-900/70 dark:shadow-gray-800/40">
             <div className="px-6 py-4">
-              {pathname.startsWith('/blog') ? (
+              {title === 'Blog' || title === '全部文章' ? (
                 <h3 className="text-primary-500 font-bold uppercase">全部文章</h3>
               ) : (
                 <Link
-                  href={`/blog`}
+                  href="/blog"
                   className="hover:text-primary-500 dark:hover:text-primary-500 font-bold text-gray-700 uppercase dark:text-gray-300"
                 >
                   全部文章
@@ -107,9 +104,7 @@ export default function ListLayoutWithTags({
               )}
               <ul>
                 {sortedTags.map((t) => {
-                  // 修复3: 直接比较中文标签名称
-                  const isActive = currentTagSlug === t
-
+                  const isActive = currentTag === t
                   return (
                     <li key={t} className="my-3">
                       {isActive ? (
@@ -118,7 +113,7 @@ export default function ListLayoutWithTags({
                         </h3>
                       ) : (
                         <Link
-                          href={`/tags/${t}`}
+                          href={`/tags/${encodeURIComponent(t)}`}
                           className="hover:text-primary-500 dark:hover:text-primary-500 px-3 py-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-300"
                           aria-label={`View posts tagged ${t}`}
                         >
@@ -131,6 +126,8 @@ export default function ListLayoutWithTags({
               </ul>
             </div>
           </div>
+
+          {/* 右侧文章列表 */}
           <div>
             <ul>
               {displayPosts.map((post) => {
@@ -168,8 +165,13 @@ export default function ListLayoutWithTags({
                 )
               })}
             </ul>
+
             {pagination && pagination.totalPages > 1 && (
-              <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+              <Pagination
+                basePath={basePath}
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+              />
             )}
           </div>
         </div>

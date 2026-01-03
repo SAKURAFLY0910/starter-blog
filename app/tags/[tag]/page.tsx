@@ -44,22 +44,22 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
     sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
   )
 
-  console.log(333, params, tagData, slugify('中国'))
-  console.warn(111, tag, filteredPosts, allBlogs)
-
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
   const initialDisplayPosts = filteredPosts.slice(0, POSTS_PER_PAGE)
   const pagination = {
     currentPage: 1,
     totalPages: totalPages,
   }
-  console.log(222, initialDisplayPosts)
+
+  const basePath = `tags/${encodeURIComponent(tag)}`
   return (
     <ListLayout
       posts={filteredPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
       title={title}
+      currentTag={tag}
+      basePath={basePath}
     />
   )
 }
