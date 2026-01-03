@@ -103,12 +103,6 @@ export default function ListLayoutWithTags({
               )}
               <ul>
                 {sortedTags.map((t) => {
-                  console.log(
-                    t,
-                    pathname.split('/tags/')[1],
-                    decodeURI(pathname.split('/tags/')[1]),
-                    slug(t)
-                  )
                   return (
                     <li key={t} className="my-3">
                       {decodeURI(pathname.split('/tags/')[1]) === slug(t) ? (
@@ -117,7 +111,7 @@ export default function ListLayoutWithTags({
                         </h3>
                       ) : (
                         <Link
-                          href={`/tags/${t}`}
+                          href={`/tags/${slug(t)}`}
                           className="hover:text-primary-500 dark:hover:text-primary-500 px-3 py-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-300"
                           aria-label={`View posts tagged ${t}`}
                         >

@@ -1,4 +1,5 @@
 import { slug } from 'github-slugger'
+import slugify from 'slugify'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
@@ -40,24 +41,10 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
 
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1)
   const filteredPosts = allCoreContent(
-    sortPosts(
-      allBlogs.filter(
-        (post) =>
-          post.tags &&
-          post.tags
-            .map((t) => {
-              if (/[\u4e00-\u9fff]/.test(t)) {
-                return t
-              } else {
-                return slug(t)
-              }
-            })
-            .includes(tag)
-      )
-    )
+    sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
   )
 
-  console.log(333, params, tagData)
+  console.log(333, params, tagData, slugify('中国'))
   console.warn(111, tag, filteredPosts, allBlogs)
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
