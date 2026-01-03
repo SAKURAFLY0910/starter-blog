@@ -102,6 +102,7 @@ export default function ListLayoutWithTags({
               )}
               <ul>
                 {sortedTags.map((t) => {
+                  console.log(t)
                   return (
                     <li key={t} className="my-3">
                       {decodeURI(pathname.split('/tags/')[1]) === slug(t) ? (
@@ -126,6 +127,7 @@ export default function ListLayoutWithTags({
           <div>
             <ul>
               {displayPosts.map((post) => {
+                console.log(post)
                 const { path, date, title, summary, tags } = post
                 return (
                   <li key={path} className="py-5">
