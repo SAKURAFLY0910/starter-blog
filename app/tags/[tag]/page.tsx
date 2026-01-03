@@ -1,5 +1,4 @@
 import { slug } from 'github-slugger'
-import slugify from 'slugify'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayoutWithTags'
@@ -14,7 +13,7 @@ export async function generateMetadata(props: {
   params: Promise<{ tag: string }>
 }): Promise<Metadata> {
   const params = await props.params
-  const tag = decodeURIComponent(params.tag)
+  const tag = decodeURI(params.tag)
   return genPageMetadata({
     title: tag,
     description: `${siteMetadata.title} ${tag} tagged content`,
@@ -31,19 +30,17 @@ export const generateStaticParams = async () => {
   const tagCounts = tagData as Record<string, number>
   const tagKeys = Object.keys(tagCounts)
   return tagKeys.map((tag) => ({
-    tag: encodeURIComponent(tag),
+    tag: encodeURI(tag),
   }))
 }
 
 export default async function TagPage(props: { params: Promise<{ tag: string }> }) {
   const params = await props.params
-  const tag = decodeURIComponent(params.tag)
-
+  const tag = decodeURI(params.tag)
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1)
   const filteredPosts = allCoreContent(
     sortPosts(allBlogs.filter((post) => post.tags && post.tags.map((t) => slug(t)).includes(tag)))
   )
-
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
   const initialDisplayPosts = filteredPosts.slice(0, POSTS_PER_PAGE)
   const pagination = {
@@ -51,15 +48,12 @@ export default async function TagPage(props: { params: Promise<{ tag: string }> 
     totalPages: totalPages,
   }
 
-  const basePath = `tags/${encodeURIComponent(tag)}`
   return (
     <ListLayout
       posts={filteredPosts}
       initialDisplayPosts={initialDisplayPosts}
       pagination={pagination}
       title={title}
-      currentTag={tag}
-      basePath={basePath}
     />
   )
 }
