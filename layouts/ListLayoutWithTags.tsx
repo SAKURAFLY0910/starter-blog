@@ -119,7 +119,7 @@ export default function ListLayoutWithTags({
                         <Link
                           href={`/tags/${encodeURIComponent(t)}`}
                           className="hover:text-primary-500 dark:hover:text-primary-500 px-3 py-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-300"
-                          aria-label={`View posts tagged ${t}`}
+                          aria-label={`View posts tagged ${encodeURIComponent(t)}`}
                         >
                           {`${t} (${tagCounts[t]})`}
                         </Link>

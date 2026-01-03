@@ -28,7 +28,7 @@ export default async function Page() {
                 <Link
                   href={`/tags/${encodeURIComponent(t)}`}
                   className="-ml-2 text-sm font-semibold text-gray-600 uppercase dark:text-gray-300"
-                  aria-label={`View posts tagged ${t}`}
+                  aria-label={`View posts tagged ${encodeURIComponent(t)}`}
                 >
                   {` (${tagCounts[t]})`}
                 </Link>
