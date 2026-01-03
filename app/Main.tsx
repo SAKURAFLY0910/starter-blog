@@ -15,7 +15,9 @@ export default function Home({ posts }) {
             随笔记录
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            {siteMetadata.description}
+            {/* {siteMetadata.description} */}
+            此生今已惯 再会永无期 唯有心头恋 缠绵到死时 <br />
+            万物难为有 无常似尾花 空蝉如此世 幻灭若朝霞
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
