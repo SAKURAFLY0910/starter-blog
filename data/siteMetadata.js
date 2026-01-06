@@ -6,7 +6,7 @@ const siteMetadata = {
   description: `此生今已惯 再会永无期 唯有心头恋 缠绵到死时 万物难为有 无常似尾花 空蝉如此世 幻灭若朝霞 `,
   language: 'zh-CN',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://wishing.icu',
+  siteUrl: 'https://starter-blog-brown.vercel.app/',
   siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
