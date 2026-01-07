@@ -10,7 +10,7 @@ const projectsData: Project[] = [
     title: '时光画廊',
     description: `人生中遇到的印象深刻的人和值得记录的事情，包括玩伴、亲人、陌生人、食物烟火、感情经历、生活记录以及一些自我感动的事情。我把他们做成了画廊，我来过。`,
     imgSrc: '/static/images/gallery.png',
-    href: 'javascript:alert("这个不许看哦")',
+    href: 'https://wishing.icu/',
   },
   {
     title: '恋爱小笺',
