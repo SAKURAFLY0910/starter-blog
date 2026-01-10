@@ -11,11 +11,32 @@ import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
+import localFont from 'next/font/local'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-space-grotesk',
+})
+
+// 本地字体示例（假设字体文件在 public/fonts/ 下）
+const wenYue = localFont({
+  src: './fonts/文悦古典明朝.woff2',
+  weight: '400',
+  style: 'normal',
+  variable: '--font-wenyue',
+  display: 'swap',
+  preload: true,
+})
+
+// 小篆
+const xiaoZhuan = localFont({
+  src: './fonts/FZXZTFW.woff2',
+  variable: '--font-xiaozhuan',
+  display: 'swap',
+  preload: true,
+  weight: '400',
+  style: 'normal',
 })
 
 export const metadata: Metadata = {
@@ -64,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${space_grotesk.variable} scroll-smooth`}
+      className={`${space_grotesk.variable} ${wenYue.variable} ${xiaoZhuan.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link

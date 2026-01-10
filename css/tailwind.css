@@ -12,6 +12,10 @@
     var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
+  --font-serif:     var(--font-wenyue), serif;           /* ← 文悦古典明朝 */
+  --font-wenyue:    var(--font-wenyue);
+  --font-xiaozhuan:    var(--font-xiaozhuan),serif;
+
   /* Colors */
   /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
   --color-primary-50: oklch(0.971 0.014 343.198);
