@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk, Noto_Serif_SC } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
@@ -37,6 +37,14 @@ const xiaoZhuan = localFont({
   preload: true,
   weight: '400',
   style: 'normal',
+})
+
+// 初始化思源宋体
+export const noto_serif_sc = Noto_Serif_SC({
+  preload: false,
+  weight: ['400', '500', '700'],
+  display: 'swap',
+  variable: '--font-noto-serif-sc', // 定义 CSS 变量名
 })
 
 export const metadata: Metadata = {
@@ -85,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${space_grotesk.variable} ${wenYue.variable} ${xiaoZhuan.variable} scroll-smooth`}
+      className={`${space_grotesk.variable} ${wenYue.variable} ${xiaoZhuan.variable} ${noto_serif_sc.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link
