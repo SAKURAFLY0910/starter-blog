@@ -2,7 +2,7 @@
 const siteMetadata = {
   title: 'Nix Echo ',
   author: 'Nix Echo',
-  headerTitle: 'Nix Echo ',
+  headerTitle: 'Nix Echo の 时光随笔',
   description: `此生今已惯 再会永无期 唯有心头恋 缠绵到死时 万物难为有 无常似尾花 空蝉如此世 幻灭若朝霞 `,
   language: 'zh-CN',
   theme: 'system', // system, dark or light
