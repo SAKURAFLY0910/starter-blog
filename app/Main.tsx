@@ -15,7 +15,7 @@ export default function Home({ posts }) {
           {/* <h1 className="font-serif text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">时光随笔</h1> */}
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
             {/* {siteMetadata.description} */}
-            万物难为有 无常似尾花 空蝉如此世 幻灭若朝霞 
+            万物难为有 无常似尾花 空蝉如此世 幻灭若朝霞
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
