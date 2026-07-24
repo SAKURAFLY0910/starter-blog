@@ -1,7 +1,8 @@
 {
-  "essay": 30,
+  "essay": 36,
   "verse": 7,
   "image": 2,
   "sadness": 1,
-  "reflections": 1
+  "reflections": 5,
+  "emotion": 2
 }
